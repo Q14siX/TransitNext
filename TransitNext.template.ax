@@ -1,0 +1,443 @@
+# @name TransitNext
+# @desc Naechste Abfahrt einer Haltestelle, Bus und Bahn
+# @author Q14siX
+# @version 20261022.161148
+# @display 52x16
+# @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
+# @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=384 group="Haltestelle"
+# @config stop_name text "Haltestelle" default="__STOP_NAME__" maxlen=90 group="Haltestelle"
+# @config stop_label text "Haltestelle / Haltebereich" default="__STOP_LABEL__" maxlen=150 group="Haltestelle"
+# @config refresh number "Abrufintervall (Minuten)" default=__REFRESH__ min=1 max=30 step=1 group="Fahrplan"
+# @config search_hours number "Suchzeitraum (Stunden)" default=__HOURS__ min=1 max=72 step=1 group="Fahrplan"
+# @config mode select "Abfahrtsanzeige" default=countdown options=countdown,time group="Darstellung"
+# @config auto_line_colors bool "Linienfarben automatisch" default=true group="Darstellung"
+# @config line_color color "Linienfarbe" default=#8737CE group="Darstellung"
+# @config time_color color "Zeitfarbe" default=#FFC247 group="Darstellung"
+# @config text_color color "Laufschriftfarbe" default=#FFFFFF group="Darstellung"
+# @config show_delay bool "Verspaetung anzeigen" default=true group="Darstellung"
+import json
+import string
+class TransitNext
+  var stop_id, stop_ids, stop_name, short_stop, api_url, ticks, waiting, status
+  var selected, line_pixels, line_fallback, line_big, auto_color
+  var next_request, attempt_n, retry_stage, scan_after, scan_pages
+  var scroll_top, scroll_bottom
+  def init()
+   self.stop_id = str(store.get("stop_id", ""))
+   self.stop_ids = str(store.get("stop_ids", self.stop_id))
+   self.stop_name = str(store.get("stop_name", ""))
+   self.short_stop = self.stop_name
+   var comma = string.find(self.short_stop, ", ")
+   if comma >= 0 && comma + 2 < size(self.short_stop)
+    self.short_stop = self.short_stop[comma + 2..-1]
+   end
+   self.api_url = "https://api.transitous.org/api/v6/stoptimes?stopId=" + self.stop_id + "&arriveBy=false&fetchStops=false&radius=8&exactRadius=true&n="
+   self.ticks = 0
+   self.waiting = false
+   self.status = "Lade..."
+   self.selected = nil
+   self.line_pixels = []
+   self.line_fallback = "OEPNV"
+   self.line_big = false
+   self.auto_color = 0x8737CE
+   self.attempt_n = 6
+   self.retry_stage = 0
+   self.next_request = 0
+   self.scan_after = 0
+   self.scan_pages = 0
+   self.scroll_top = {"mode":"loop", "whenFits":"static", "speed":75, "gap":7}
+   self.scroll_bottom = {"mode":"loop", "whenFits":"static", "speed":65, "gap":8, "repeat":1}
+   self.prepare_line("-")
+  end
+  def iso_minute(v)
+   if type(v) != "string" || size(v) < 19 return nil end
+   var y = num(v[0..3])
+   var m = num(v[5..6])
+   var d = num(v[8..9])
+   var hh = num(v[11..12])
+   var mm = num(v[14..15])
+   if y == nil || m == nil || d == nil || hh == nil || mm == nil return nil end
+   if m < 1 || m > 12 || d < 1 || d > 31 || hh > 23 || mm > 59 return nil end
+   if m <= 2 y -= 1 end
+   var era = int(y / 400)
+   var yoe = y - era * 400
+   var adj = m > 2 ? m - 3 : m + 9
+   var doy = int((153 * adj + 2) / 5) + d - 1
+   var doe = yoe * 365 + int(yoe / 4) - int(yoe / 100) + doy
+   var stamp = (era * 146097 + doe - 719468) * 1440 + hh * 60 + mm
+   if size(v) >= 25
+    var sign = v[-6]
+    if sign == "+" || sign == "-"
+     var off = num(v[-5..-4], 0) * 60 + num(v[-2..-1], 0)
+     if sign == "-" off = 0 - off end
+     stamp -= off
+    end
+   end
+   return stamp
+  end
+  def local_time(timestamp)
+   var utc = epoch_ms() / 60000
+   var shift = (hour() * 60 + minute() - (utc % 1440) + 1440) % 1440
+   if shift > 720 shift -= 1440 end
+   var local = (timestamp + shift + 1440) % 1440
+   return format("%02d:%02d", int(local / 60), int(local % 60))
+  end
+  def utc_iso(value)
+   var days = int(value / 1440)
+   var mins = value % 1440
+   if mins < 0
+    mins += 1440
+    days -= 1
+   end
+   var z = days + 719468
+   var era = int((z >= 0 ? z : z - 146096) / 146097)
+   var doe = z - era * 146097
+   var yoe = int((doe - int(doe / 1460) + int(doe / 36524) - int(doe / 146096)) / 365)
+   var yy = yoe + era * 400
+   var doy = doe - (365 * yoe + int(yoe / 4) - int(yoe / 100))
+   var mp = int((5 * doy + 2) / 153)
+   var dd = doy - int((153 * mp + 2) / 5) + 1
+   var mm = mp + (mp < 10 ? 3 : -9)
+   if mm <= 2 yy += 1 end
+   return format("%04d-%02d-%02dT%02d:%02d:00Z", yy, mm, dd, int(mins / 60), int(mins % 60))
+  end
+  def stop_matches(place)
+   if !isinstance(place, map) return false end
+   var actual = place.find("stopId")
+   if type(actual) != "string" return false end
+   # Only explicitly selected boarding-position IDs are permitted.
+   return string.find("|" + self.stop_ids + "|", "|" + actual + "|") >= 0
+  end
+  def build(event)
+   if !isinstance(event, map) return nil end
+   if event.find("cancelled", false) || event.find("tripCancelled", false) return nil end
+   if event.find("pickupDropoffType") == "NOT_ALLOWED" return nil end
+   var place = event.find("place")
+   if !self.stop_matches(place) return nil end
+   if place.find("cancelled", false) || place.find("pickupType") == "NOT_ALLOWED" return nil end
+   var departure = place.find("departure", place.find("scheduledDeparture"))
+   var epoch = self.iso_minute(departure)
+   if epoch == nil return nil end
+   var now = epoch_ms() / 60000
+   if epoch < now - 0.5 return nil end
+   var horizon = clamp(num(store.get("search_hours"), 24), 1, 72) * 60
+   if epoch > now + horizon return nil end
+   var direction = event.find("headsign")
+   if type(direction) != "string" || direction == ""
+    var terminal = event.find("tripTo")
+    if isinstance(terminal, map) direction = terminal.find("name") end
+   end
+   if type(direction) != "string" || direction == "" direction = "Richtung unbekannt" end
+   var line = event.find("routeShortName", event.find("displayName", ""))
+   if line == nil || str(line) == ""
+    var kind = event.find("mode", "OEPNV")
+    line = kind == "BUS" ? "BUS" : kind == "TRAM" ? "TRAM" : "ZUG"
+   end
+   var scheduled = self.iso_minute(place.find("scheduledDeparture"))
+   return {
+    "epoch": epoch,
+    "line": str(line),
+    "mode": str(event.find("mode", "TRANSIT")),
+    "direction": direction,
+    "delay": scheduled == nil ? 0 : epoch - scheduled,
+    "realtime": event.find("realTime", false)
+   }
+  end
+  def color_line(value)
+   var digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   var n = 0
+   var v = string.toupper(value)
+   for i : 0 .. size(v) - 1
+    var x = string.find(digits, v[i..i])
+    if x >= 0 n = (n * 37 + x + 1) % 360 end
+   end
+   return hsv((n * 137 + 280) % 360, 83, 59)
+  end
+  def prepare_line(value)
+   self.line_pixels = []
+   self.line_fallback = value
+   self.line_big = false
+   self.auto_color = self.color_line(value)
+   var digits = "0123456789"
+   var count = size(value)
+   if count < 1 || count > 3 return end
+   for i : 0 .. count - 1
+    if string.find(digits, value[i..i]) < 0 return end
+   end
+   var glyphs7 = [
+    "01110100011001110101110011000101110",
+    "00100011000010000100001000010001110",
+    "11110000010000101110100001000011111",
+    "11110000010000101110000010000111110",
+    "10010100101001011111000100001000010",
+    "11111100001000011110000010000111110",
+    "01110100001000011110100011000101110",
+    "11111000010001000100010000100001000",
+    "01110100011000101110100011000101110",
+    "01110100011000101111000010000101110"
+   ]
+   var glyphs5 = [
+    "111101101101111", "010110010010111", "110001111100111",
+    "110001111001110", "101101111001001", "111100111001110",
+    "011100111101111", "111001010010010", "111101111101111",
+    "111101111001110"
+   ]
+   var cols = count == 1 ? 5 : 3
+   var rows = count == 1 ? 7 : 5
+   var advance = count == 3 ? 1 : 2
+   var pix = count == 3 ? 1 : 2
+   var gap = count == 1 ? 0 : count == 2 ? 2 : 1
+   var gwidth = (cols - 1) * advance + pix
+   var total = count * gwidth + (count - 1) * gap
+   var left = int((17 - total) / 2)
+   var top = int((16 - rows * 2) / 2)
+   for i : 0 .. count - 1
+    var glyph = count == 1 ? glyphs7[string.find(digits, value[i..i])] : glyphs5[string.find(digits, value[i..i])]
+    for y : 0 .. rows - 1
+     for x : 0 .. cols - 1
+      if glyph[y * cols + x..y * cols + x] == "1"
+       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, top + y * 2, pix])
+      end
+     end
+    end
+   end
+   self.line_big = true
+  end
+  def request()
+   if self.waiting return end
+   if epoch_ms() < 1000000000000
+    self.status = "Warte auf Uhrzeit"
+    self.ticks = 20
+    return
+   end
+   if self.stop_id == ""
+    self.status = "Haltestelle waehlen"
+    self.ticks = 300
+    return
+   end
+   self.waiting = true
+   self.next_request = 0
+   self.status = "Lade..."
+   self.ticks = clamp(num(store.get("refresh"), 5), 1, 30) * 60
+   var url = self.api_url + str(self.attempt_n)
+   if self.scan_after > 0 url += "&time=" + self.utc_iso(self.scan_after) end
+   http.get(url, / body, code -> self.on_reply(body, code),
+    {"find":"\"stopTimes\":", "keep":8000, "cap":8192,
+     "headers":{"Accept":"application/json", "User-Agent":"TransitNext-AWTRIX"}})
+  end
+  def parse_events(body)
+   var pos = string.find(body, "[")
+   if pos < 0 return nil end
+   var result = []
+   var cursor = pos + 1
+   while cursor < size(body)
+    var ch = body[cursor..cursor]
+    if ch == " " || ch == "\n" || ch == "\t" || ch == "\r" || ch == ","
+     cursor += 1
+     continue
+    end
+    if ch == "]" return {"events":result, "complete":true} end
+    if ch != "{" return nil end
+    var start = cursor
+    var depth = 0
+    var quoted = false
+    var escaped = false
+    while cursor < size(body)
+     ch = body[cursor..cursor]
+     if quoted
+      if escaped
+       escaped = false
+      elif ch == "\\"
+       escaped = true
+      elif ch == "\""
+       quoted = false
+      end
+     elif ch == "\""
+      quoted = true
+     elif ch == "{"
+      depth += 1
+     elif ch == "}"
+      depth -= 1
+      if depth == 0
+       var item = json.load(body[start..cursor])
+       if !isinstance(item, map) return nil end
+       result.push(item)
+       cursor += 1
+       break
+      end
+     end
+     cursor += 1
+    end
+    if depth != 0 return {"events":result, "complete":false} end
+   end
+   return {"events":result, "complete":false}
+  end
+  def on_reply(body, code)
+   self.waiting = false
+   if code != 200
+    self.status = code == 0 ? "Netz/Timeout" : "HTTP " + str(code)
+    self.ticks = 120
+    return
+   end
+   if body == nil
+    self.retry("Antwort zu gross")
+    return
+   end
+   try
+    var parsed = self.parse_events(body)
+    if !isinstance(parsed, map)
+     self.retry("API-Format")
+     return
+    end
+    var best = nil
+    var now = epoch_ms() / 60000
+    for item : parsed["events"]
+     var ev = self.build(item)
+     if ev != nil && (best == nil || ev["epoch"] < best["epoch"])
+      best = ev
+     end
+    end
+    if best != nil
+     self.selected = best
+     self.prepare_line(best["line"])
+     self.status = "OK"
+     self.retry_stage = 0
+     self.attempt_n = 6
+     self.scan_after = 0
+     self.scan_pages = 0
+     return
+    end
+    if !parsed["complete"]
+     self.retry("Antwort unvollstaendig")
+     return
+    end
+    # A page with only cancelled or unrelated stops is not an empty timetable.
+    if size(parsed["events"]) > 0
+     var last = 0
+     for item : parsed["events"]
+      var place = item.find("place")
+      if isinstance(place, map)
+       var stamp = self.iso_minute(place.find("departure", place.find("scheduledDeparture")))
+       if stamp != nil && stamp > last last = stamp end
+      end
+     end
+     var horizon = now + clamp(num(store.get("search_hours"), 24), 1, 72) * 60
+     if last > now && last < horizon && self.scan_pages < 10
+      self.scan_after = last + 1
+      self.scan_pages += 1
+      self.retry_stage = 0
+      self.attempt_n = 6
+      self.next_request = now_ms() + 3500
+      self.status = "Suche weitere Abfahrten"
+      return
+     end
+     if self.scan_pages >= 10 || last <= now
+      self.status = "Noch keine passende Abfahrt"
+      self.ticks = 120
+      return
+     end
+    end
+    self.selected = nil
+    self.prepare_line("-")
+    self.status = "Keine Abfahrt in " + str(store.get("search_hours", 24)) + "h"
+    self.retry_stage = 0
+    self.attempt_n = 6
+    self.scan_after = 0
+    self.scan_pages = 0
+   except .. as err, message
+    self.retry("Antwort unlesbar")
+    log("TransitNext: " + str(message))
+   end
+  end
+  def retry(reason)
+   if self.retry_stage == 0
+    self.retry_stage = 1
+    self.attempt_n = 2
+    self.next_request = now_ms() + 7000
+    self.status = "Abfrage verkleinert"
+   elif self.retry_stage == 1
+    self.retry_stage = 2
+    self.attempt_n = 1
+    self.next_request = now_ms() + 7000
+    self.status = "Pruefe Einzelabfahrt"
+   else
+    self.status = reason
+    self.next_request = 0
+    self.ticks = 120
+    log("TransitNext: " + reason)
+   end
+  end
+  def loop()
+   if self.selected != nil && epoch_ms() > (self.selected["epoch"] + 0.5) * 60000
+    self.selected = nil
+    self.prepare_line("-")
+    self.status = "Suche naechste..."
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+   end
+   if !self.waiting && self.next_request > 0 && now_ms() >= self.next_request
+    self.next_request = 0
+    self.request()
+   elif !self.waiting && self.next_request == 0 && self.ticks <= 0
+    self.retry_stage = 0
+    self.attempt_n = 6
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.request()
+   end
+   self.ticks -= 1
+  end
+  def on_button(btn)
+   if btn == "select"
+    self.next_request = 0
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.attempt_n = 6
+    if !self.waiting self.request() end
+    return true
+   end
+   return false
+  end
+  def draw()
+   clear()
+   if width() < 52 || height() < 16 return end
+   var c = store.get("line_color")
+   if store.get("auto_line_colors") c = self.auto_color end
+   rect_fill(0, 0, 17, 16, c)
+   if self.line_big
+    for dot : self.line_pixels
+     rect_fill(dot[0], dot[1], dot[2], 2, 0xFFFFFF)
+    end
+   else
+    font("small")
+    var value = self.line_fallback
+    var split = string.find(value, " ")
+    if split > 0 && split < 4 && size(value) - split - 1 < 4
+     text(1, 6, value[0..split - 1], 0xFFFFFF)
+     text(1, 14, value[split + 1..-1], 0xFFFFFF)
+    else
+     text(1, 10, size(value) > 3 ? value[0..2] : value, 0xFFFFFF)
+    end
+   end
+   font("small")
+   if self.selected == nil
+    scroll_text(18, 6, 34, self.status, store.get("time_color"), self.scroll_top)
+    scroll_text(18, 14, 34, self.short_stop, store.get("text_color"), self.scroll_bottom)
+    return
+   end
+   var label = self.local_time(self.selected["epoch"])
+   if store.get("mode") == "countdown"
+    var left = int((self.selected["epoch"] * 60000 - epoch_ms() + 59999) / 60000)
+    label = str(max(0, left)) + "min"
+   end
+   if store.get("show_delay") && self.selected["realtime"] && self.selected["delay"] != 0 && int(now_ms() / 4000) % 2 == 1
+    var delay = self.selected["delay"]
+    label = (delay > 0 ? "+" : "") + str(delay) + "min"
+   end
+   scroll_text(18, 6, 34, label, store.get("time_color"), self.scroll_top)
+   scroll_text(18, 14, 34, self.short_stop + " > " + self.selected["direction"], store.get("text_color"), self.scroll_bottom)
+  end
+end
+return TransitNext()
