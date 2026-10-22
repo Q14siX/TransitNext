@@ -8,9 +8,9 @@ TransitNext is a standalone public transport departure board for **AWTRIX NG / U
 
 [Einrichtungsassistent / Setup tool](./TransitNext-Einrichtung.html) · [Skriptvorlage / Script template](./TransitNext.template.ax) · [Release Notes](./RELEASE.md)
 
-> **Wichtig / Important:** GitHub führt HTML-Dateien nicht als Web-App aus. Öffne **Code → Download ZIP**, entpacke das Repository und starte \`TransitNext-Einrichtung.html\` lokal im Browser. Die Datei \`TransitNext.template.ax\` ist eine Vorlage mit Platzhaltern und **nicht** zur direkten Installation vorgesehen.
+> **Wichtig / Important:** GitHub führt HTML-Dateien nicht als Web-App aus. Öffne **Code → Download ZIP**, entpacke das Repository und starte `TransitNext-Einrichtung.html` lokal im Browser. Die Datei `TransitNext.template.ax` ist eine Vorlage mit Platzhaltern und **nicht** zur direkten Installation vorgesehen.
 >
-> GitHub does not run HTML files as web applications. Choose **Code → Download ZIP**, extract it, and open \`TransitNext-Einrichtung.html\` locally. \`TransitNext.template.ax\` is an unconfigured template, **not** a ready-to-install script.
+> GitHub does not run HTML files as web applications. Choose **Code → Download ZIP**, extract it, and open `TransitNext-Einrichtung.html` locally. `TransitNext.template.ax` is an unconfigured template, **not** a ready-to-install script.
 
 ---
 
@@ -23,10 +23,10 @@ TransitNext is a standalone public transport departure board for **AWTRIX NG / U
 - **Bus und Bahn:** Verkehrsmittel und Regionen, für die Transitous Fahrplandaten bereitstellt – nicht nur Kaufbeuren.
 - **Haltepositionen statt Fahrtziele:** Gleichnamige Haltestellen können unterschiedliche physische Einstiegspositionen haben. Mehrere Linien oder Ziele einer Position bleiben ein einziger Eintrag.
 - **Richtungsangaben zur Auswahl:** Bei mehreren Positionen können Ziele aktueller Fahrten als Orientierung erscheinen. Diese Hinweise sind keine festen Richtungsfilter.
-- **LED-gerechte Darstellung:** Farbiges Linienfeld, Countdown oder Abfahrtsuhrzeit, darunter scrollende Laufschrift. Der Ortsname am Beginn kann entfallen, z. B. \`Märzenbachweg > Aitrang, Gemeindeamt\`.
+- **LED-gerechte Darstellung:** Farbiges Linienfeld, Countdown oder Abfahrtsuhrzeit, darunter scrollende Laufschrift. Der Ortsname am Beginn kann entfallen, z. B. `Märzenbachweg > Aitrang, Gemeindeamt`.
 - **Personalisierbar:** Automatische Linienfarben, optionale Verspätungen und anpassbare Anzeigefarben.
 - **Abrufsteuerung:** Aktualisierung alle **1–30 Minuten** und Suchzeitraum **1–72 Stunden**.
-- **Direkte Installation:** Einrichtungsassistent installiert individuelle Berry-Skripte auf der AWTRIX NG oder exportiert konfigurierte \`.ax\`-Dateien.
+- **Direkte Installation:** Einrichtungsassistent installiert individuelle Berry-Skripte auf der AWTRIX NG oder exportiert konfigurierte `.ax`-Dateien.
 
 ### Voraussetzungen
 
@@ -38,7 +38,7 @@ TransitNext is a standalone public transport departure board for **AWTRIX NG / U
 ### Einrichtung und Installation
 
 1. Repository [Q14siX/TransitNext](https://github.com/Q14siX/TransitNext) über **Code → Download ZIP** herunterladen und entpacken.
-2. **\`TransitNext-Einrichtung.html\`** im Browser öffnen.
+2. **`TransitNext-Einrichtung.html`** im Browser öffnen.
 3. **Ort suchen**, passenden Ort auswählen, Haltestellen filtern und die gewünschte **Halteposition** wählen.
 4. **Haltestelle hinzufügen** anklicken; für weitere Haltepunkte wiederholen. Die Reihenfolge über die Pfeiltasten festlegen.
 5. **Suchzeitraum**, **Abrufintervall** und **Zeitdarstellung** konfigurieren.
@@ -62,16 +62,16 @@ Richtungsangaben im Auswahlfeld sind **Beispiele aus aktuellen Abfahrten** und b
 
 ### Beispielanzeige
 
-\`\`\`text
+```text
 [ 76 ]   8 min
          Märzenbachweg > Aitrang, Gemeindeamt
-\`\`\`
+```
 
 *Schematische Darstellung.* Auf dem 52 × 16-Pixel-Display bleibt die Liniennummer fest stehen, während längere Texte horizontal scrollen. Wahlweise wird statt des Countdowns die Abfahrtsuhrzeit angezeigt. Verspätungs- und Ausfallinformationen werden verwendet, **soweit die Quelle sie liefert**.
 
 ### Datenquelle, Urheberrecht und Zuverlässigkeit
 
-TransitNext bezieht Orts-, Haltestellen- und Abfahrtsinformationen über **[Transitous](https://transitous.org/)** und die **[MOTIS-API](https://transitous.org/api/)**, insbesondere den Endpunkt \`/api/v6/stoptimes\`. Transitous bündelt Daten regionaler Verkehrsunternehmen und weiterer Fahrplananbieter.
+TransitNext bezieht Orts-, Haltestellen- und Abfahrtsinformationen über **[Transitous](https://transitous.org/)** und die **[MOTIS-API](https://transitous.org/api/)**, insbesondere den Endpunkt `/api/v6/stoptimes`. Transitous bündelt Daten regionaler Verkehrsunternehmen und weiterer Fahrplananbieter.
 
 **Attribution / Datenquellen:** [Transitous – Sources](https://transitous.org/sources/) · [OpenStreetMap](https://www.openstreetmap.org/copyright)
 
@@ -94,7 +94,7 @@ TransitNext ist ein unabhängiges Community-Projekt, keine offizielle Anwendung 
 - **Bus, rail, and more:** Works wherever the Transitous data source offers public transport departures.
 - **Position-aware selection:** Different boarding positions sharing a stop name can remain separate; several destinations served by one position remain grouped.
 - **Direction hints:** Currently known destinations may help distinguish positions, but are **not permanent destination filters**.
-- **LED-friendly layout:** Colored route number, departure countdown or clock time, and scrolling stop-to-destination text, e.g. \`Märzenbachweg > Aitrang, Gemeindeamt\`.
+- **LED-friendly layout:** Colored route number, departure countdown or clock time, and scrolling stop-to-destination text, e.g. `Märzenbachweg > Aitrang, Gemeindeamt`.
 - **Customizable:** Automatic line colors, optional delay information, custom display colors, **1–30-minute** update interval, and **1–72-hour** search window.
 - **Standalone operation:** Native Berry script on the clock; no Home Assistant, MQTT, separate server, or API key.
 
@@ -104,13 +104,13 @@ ULANZI TC002 or compatible **52 × 16 AWTRIX NG** display with Berry scripting s
 
 ### Setup and installation
 
-1. Download [Q14siX/TransitNext](https://github.com/Q14siX/TransitNext) using **Code → Download ZIP**, extract the archive, and open **\`TransitNext-Einrichtung.html\`** locally.
+1. Download [Q14siX/TransitNext](https://github.com/Q14siX/TransitNext) using **Code → Download ZIP**, extract the archive, and open **`TransitNext-Einrichtung.html`** locally.
 2. Search for a **city**, choose it, and select the correct **physical stop/boarding position**.
 3. Click **Haltestelle hinzufügen** (Add stop) for each desired position. Set the display order.
 4. Configure the update interval, search window, and countdown/time display.
 5. Enter the AWTRIX NG IP address or hostname and click **Apps auf AWTRIX installieren / aktualisieren** (Install/update apps).
 
-**Manual alternative:** Use **Installationsdateien (.ax) herunterladen** (Download installation files). Import the generated \`.ax\` files via **AWTRIX NG → Scripts → Import → Save**. The included \`TransitNext.template.ax\` contains placeholders and is **not installation-ready** without configuration.
+**Manual alternative:** Use **Installationsdateien (.ax) herunterladen** (Download installation files). Import the generated `.ax` files via **AWTRIX NG → Scripts → Import → Save**. The included `TransitNext.template.ax` contains placeholders and is **not installation-ready** without configuration.
 
 ### Changing existing stops
 
@@ -122,7 +122,7 @@ A named stop can include distinct boarding poles/platforms, while one pole may s
 
 ### Data source, attribution, and limitations
 
-TransitNext retrieves stop and departure data from the **[Transitous](https://transitous.org/) [MOTIS API](https://transitous.org/api/)**, including \`/api/v6/stoptimes\`. Transitous aggregates feeds from local operators and public transit data publishers.
+TransitNext retrieves stop and departure data from the **[Transitous](https://transitous.org/) [MOTIS API](https://transitous.org/api/)**, including `/api/v6/stoptimes`. Transitous aggregates feeds from local operators and public transit data publishers.
 
 **Source attribution and licenses:** [Transitous – Sources](https://transitous.org/sources/) · [OpenStreetMap](https://www.openstreetmap.org/copyright)
 
