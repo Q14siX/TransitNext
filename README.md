@@ -1,57 +1,133 @@
-# TransitNext – Haltepositionen und nächste Abfahrt
+# TransitNext
 
-Eigenständige App für **AWTRIX NG / ULANZI TC002**. Keine Installation von Home Assistant, kein MQTT-Broker und kein zusätzlicher Server. Die ULANZI fragt die Fahrplandaten eigenständig bei **Transitous/MOTIS** ab.
+**Deine nächste Bus- oder Bahnabfahrt direkt auf AWTRIX NG.** / **Your next public transport departure on AWTRIX NG.**
 
-## Einrichtung und Installation
+TransitNext ist eine eigenständige Abfahrtsanzeige für **AWTRIX NG auf der ULANZI TC002 (52 × 16 Pixel)**. Du verwaltest deine Haltepunkte zentral im Browser; die Uhr ruft die Abfahrtsdaten anschließend selbst über **Transitous/MOTIS** ab. **Kein Home Assistant, kein MQTT-Broker und kein zusätzlicher Server erforderlich.**
 
-1. `TransitNext-Einrichtung.html` im Browser öffnen.
-2. **Ort suchen**, Ort auswählen, anschließend **Haltepunkt auswählen**. Bei gleichnamigen Haltepunkten werden nach der Haltestellensuche mögliche Richtungen aus den tatsächlichen Abfahrtsdaten nachgeladen.
-3. **Haltestelle hinzufügen** und gegebenenfalls weitere Haltepunkte ergänzen. Die Liste kann mit **Ändern**, **Entfernen** und den Pfeiltasten bearbeitet und sortiert werden.
-4. IP-Adresse bzw. Hostname deiner AWTRIX-Uhr eingeben und **Apps auf AWTRIX installieren / aktualisieren** auswählen.
-5. Alternativ mit **Installationsdateien (.ax) herunterladen** die fertig eingerichteten Skripte exportieren und in der AWTRIX-Weboberfläche unter **Scripts → Import → Save** einzeln installieren.
+TransitNext is a standalone public transport departure board for **AWTRIX NG / ULANZI TC002**. Configure your stops in a browser; the device fetches departures directly from **Transitous/MOTIS**. **No Home Assistant, MQTT broker, or extra server required.**
 
-**Bestehende Installation:** Immer zuerst **Haltestellen von Uhr laden**, bevor Änderungen gespeichert werden. Bereits eingerichtete Einträge werden übernommen. Der Assistent bewahrt die Reihenfolge und den Aktivierungsstatus fremder AWTRIX-Apps; gelöschte TransitNext-Skripte werden erst nach expliziter Bestätigung entfernt.
+[Einrichtungsassistent / Setup tool](./TransitNext-Einrichtung.html) · [Skriptvorlage / Script template](./TransitNext.template.ax) · [Release Notes](./RELEASE.md)
 
-## Unterschied zwischen Haltepunkt und Richtung
-
-Ein **Haltepunkt** ist die konkrete Stelle, an der Busse oder Bahnen halten. Eine einzelne Position kann **mehrere Linien mit unterschiedlichen Fahrtzielen** bedienen. Umgekehrt können sich auf verschiedenen Straßenseiten gleichnamige Haltepunkte befinden, deren Fahrzeuge in unterschiedliche Richtungen abfahren.
-
-Die Konfigurationsseite unterscheidet deshalb **tatsächliche Haltepositionskennungen und deren Koordinaten bzw. offizielle Steig-/Gleisangaben**, nicht bloß Fahrtziele. Sehr nahe (maximal 8 m), gleichnamige Positionen ohne widersprechende Steigangaben können gruppiert werden, damit mehrere Datenquellen denselben tatsächlichen Haltepunkt nicht unnötig mehrfach anzeigen. Weiter auseinanderliegende oder durch Steigkennungen unterscheidbare Positionen bleiben eigenständige Auswahlmöglichkeiten.
-
-Bei mehreren gleichnamigen Haltepunkten wird hinter dem Namen eine **Orientierungsangabe** eingeblendet, beispielsweise:
-
-- `Kaufbeuren, Lachenbühl (Haltepunkt 1 · Richtung Oberbeuren / Obergünzburg)`
-- `Kaufbeuren, Lachenbühl (Haltepunkt 2 · Richtung Kaufbeuren Plärrer)`
-
-Die Ziele in Klammern sind **aus aktuell verfügbaren Fahrten ermittelte Beispiele**, keine dauerhaft festen Richtungen und keine Filter für die Fahrplanabfrage. Die Ziffern `Haltepunkt 1/2` sind interne Unterscheidungen im Assistenten und **keine amtlichen Steignummern**. Ist eine offizielle Gleis-/Steignummer vorhanden, wird diese stattdessen angezeigt. Wenn keine Richtung abgerufen werden kann, bleibt der Haltepunkt auswählbar und wird entsprechend gekennzeichnet.
-
-**Auf der Uhr** werden ausschließlich die ausdrücklich für den gewählten Haltepunkt gespeicherten Kennungen berücksichtigt. Die früher verwendete unsichere Namensprüfung und der 110-m-Umkreis wurden entfernt. So gelangen Fahrten einer gegenüberliegenden, nicht ausgewählten Position nicht allein wegen des gleichen Haltestellennamens in die Anzeige.
-
-**Datengrenze:** Wenn Transitous für physisch unterschiedliche Positionen identische oder fehlerhafte Koordinaten bzw. Kennungen meldet und keine zusätzlichen Steigdaten liefert, lässt sich der Unterschied nicht mit Sicherheit rekonstruieren. Derzeit wurde nur mit simulierten Haltepositions- und Abfahrtsdaten geprüft. Vor einer produktiven Nutzung mit unbekannten Haltestellen die ermittelten Richtungen und Abfahrten über **Abfahrten prüfen** plausibilisieren.
-
-## Anzeige
-
-- Pro konfiguriertem Haltepunkt **genau eine native Skript-App**, der Reihe nach in der AWTRIX-Rotation.
-- Innerhalb einer App **immer nur die zeitlich nächste gültige Abfahrt** dieser Position, unabhängig von Linie oder Fahrtziel.
-- Links: farbiges Linienfeld, rechts oben: Minuten oder Abfahrtsuhrzeit, rechts unten: Laufschrift mit **verkürztem Starthaltestellennamen**, z. B. `Lachenbühl > Aitrang, Gemeindeamt`.
-- Suchzeitraum (1–72 Stunden), Aktualisierungsintervall (1–30 Minuten), Linienfarben und Anzeigeoptionen bleiben erhalten.
-- Die Abfahrtsdaten werden unter Berücksichtigung der zulässigen Haltepositions-IDs gefiltert. Fahrtausfälle werden ausgeschlossen, soweit sie in den Daten gekennzeichnet sind.
-
-## Technische Grenzen
-
-- Die Nutzung erfordert eine mit dem Internet verbundene AWTRIX-NG-Uhr und aktuelle Abfahrtsdaten der Quelle Transitous/MOTIS.
-- Pro Haltepunkt werden die zugehörigen konkreten IDs gespeichert (`stop_id` als primäre ID, `stop_ids` als explizite Liste). Für bestehende Installationen ohne `stop_ids` gilt die primäre ID.
-- Die native Abfrage nutzt `/api/v6/stoptimes` mit `radius=8` und `exactRadius=true`. Die tatsächlichen Ereignisse werden zusätzlich anhand ihrer IDs validiert.
-- Die Konfigurationsseite zeigt Richtungen nur für gleichnamige, mehrfach vorhandene Haltepunkte, um nicht für sämtliche Haltestellen eines Orts zahlreiche API-Aufrufe auszulösen.
-- Maximal 20 Haltestellen in der Konfigurationsseite; die tatsächlich installierbare Anzahl hängt vom verfügbaren Speicher der ULANZI ab.
-- Ein Live-Test auf echter ULANZI-TC002-Hardware und gegen die tatsächlichen Daten des Kaufbeurer Verkehrs steht aus.
+> **Wichtig / Important:** GitHub führt HTML-Dateien nicht als Web-App aus. Öffne **Code → Download ZIP**, entpacke das Repository und starte \`TransitNext-Einrichtung.html\` lokal im Browser. Die Datei \`TransitNext.template.ax\` ist eine Vorlage mit Platzhaltern und **nicht** zur direkten Installation vorgesehen.
+>
+> GitHub does not run HTML files as web applications. Choose **Code → Download ZIP**, extract it, and open \`TransitNext-Einrichtung.html\` locally. \`TransitNext.template.ax\` is an unconfigured template, **not** a ready-to-install script.
 
 ---
 
-# English
+## Deutsch
 
-TransitNext is a standalone AWTRIX NG / ULANZI TC002 app showing the next departure for each configured boarding position. No Home Assistant or MQTT required. The browser-based configuration supports searching a town, selecting individual boarding poles/platforms, adding multiple positions, changing their order, editing or removing them, reading an existing device configuration, and installing native Berry scripts directly onto the clock (or exporting `.ax` files).
+### Funktionen
 
-A **boarding position is not a destination**. Multiple routes with different destinations may depart from one physical pole. Opposite sides of a road may use the same public stop name but must remain separately selectable. This release uses exact stop IDs, coordinates and supplied platform markers, grouping only nearby matching positions within 8 metres; route headsigns are used as informative examples for disambiguation, not as stop identifiers or route filters. The device filters departures by explicit selected IDs, not just by matching name.
+- **Nur die nächste Abfahrt:** Pro ausgewähltem Haltepunkt zeigt die Uhr ausschließlich die nächste verfügbare Abfahrt.
+- **Mehrere Haltepunkte:** Über eine Konfigurationsseite hinzufügen, ändern, entfernen und sortieren; AWTRIX NG zeigt sie nacheinander in seiner App-Rotation.
+- **Bus und Bahn:** Verkehrsmittel und Regionen, für die Transitous Fahrplandaten bereitstellt – nicht nur Kaufbeuren.
+- **Haltepositionen statt Fahrtziele:** Gleichnamige Haltestellen können unterschiedliche physische Einstiegspositionen haben. Mehrere Linien oder Ziele einer Position bleiben ein einziger Eintrag.
+- **Richtungsangaben zur Auswahl:** Bei mehreren Positionen können Ziele aktueller Fahrten als Orientierung erscheinen. Diese Hinweise sind keine festen Richtungsfilter.
+- **LED-gerechte Darstellung:** Farbiges Linienfeld, Countdown oder Abfahrtsuhrzeit, darunter scrollende Laufschrift. Der Ortsname am Beginn kann entfallen, z. B. \`Märzenbachweg > Aitrang, Gemeindeamt\`.
+- **Personalisierbar:** Automatische Linienfarben, optionale Verspätungen und anpassbare Anzeigefarben.
+- **Abrufsteuerung:** Aktualisierung alle **1–30 Minuten** und Suchzeitraum **1–72 Stunden**.
+- **Direkte Installation:** Einrichtungsassistent installiert individuelle Berry-Skripte auf der AWTRIX NG oder exportiert konfigurierte \`.ax\`-Dateien.
 
-Position numbers are UI-only identifiers, not official platform numbers. When platform geometry or metadata is missing or wrong, reliable physical disambiguation cannot be guaranteed. Tests used mocked data and a simulated AWTRIX device; no live hardware verification has been performed.
+### Voraussetzungen
+
+- ULANZI TC002 oder kompatibles AWTRIX-NG-Gerät mit **52 × 16 Pixeln** und Berry-Skriptunterstützung.
+- WLAN- und Internetverbindung der Uhr für die Fahrplanauskunft.
+- Moderner Browser; für die Direktinstallation muss die Uhr im lokalen Netzwerk erreichbar sein.
+- **Kein persönlicher API-Schlüssel** erforderlich.
+
+### Einrichtung und Installation
+
+1. Repository [Q14siX/TransitNext](https://github.com/Q14siX/TransitNext) über **Code → Download ZIP** herunterladen und entpacken.
+2. **\`TransitNext-Einrichtung.html\`** im Browser öffnen.
+3. **Ort suchen**, passenden Ort auswählen, Haltestellen filtern und die gewünschte **Halteposition** wählen.
+4. **Haltestelle hinzufügen** anklicken; für weitere Haltepunkte wiederholen. Die Reihenfolge über die Pfeiltasten festlegen.
+5. **Suchzeitraum**, **Abrufintervall** und **Zeitdarstellung** konfigurieren.
+6. IP-Adresse oder Hostnamen der ULANZI eingeben und **Apps auf AWTRIX installieren / aktualisieren** verwenden.
+
+Jeder Haltepunkt erhält eine eigene native AWTRIX-App. Die AWTRIX-Rotation schaltet zwischen diesen Apps um; **innerhalb jeder App erscheint nur eine Abfahrt**.
+
+**Manuelle Installation:** Im Assistenten **Installationsdateien (.ax) herunterladen** wählen. Die generierten Dateien entpacken und in der AWTRIX-Weboberfläche über **Scripts → Import → Save** importieren. Danach bei Bedarf die Reihenfolge unter **Apps** festlegen.
+
+### Haltestellen nachträglich verwalten
+
+Die HTML-Konfigurationsseite erneut öffnen, Geräteadresse eingeben und **Haltestellen von Uhr laden** wählen, **bevor** Änderungen vorgenommen werden. Anschließend Haltepunkte hinzufügen, ersetzen, entfernen oder sortieren und über **Apps auf AWTRIX installieren / aktualisieren** synchronisieren.
+
+Die Verwaltung ist auf **20 Haltepunkte** ausgelegt; die tatsächliche installierbare Anzahl hängt vom freien Gerätespeicher ab. Andere AWTRIX-Apps sollen von der Synchronisierung unberührt bleiben.
+
+### Haltepunkt und Fahrtrichtung
+
+Ein Haltestellenname kann mehrere gegenüberliegende Haltepositionen bezeichnen. Eine einzelne Position kann wiederum unterschiedliche Linien und Ziele bedienen. TransitNext verwendet die vom Anbieter gelieferten **Haltepositions-IDs**, Koordinaten und ggf. Steig- oder Gleisangaben. Nahe passende Einträge dürfen unter engen Bedingungen zusammengefasst werden (bis zu **8 m**, ohne widersprechende Steigdaten).
+
+Richtungsangaben im Auswahlfeld sind **Beispiele aus aktuellen Abfahrten** und beschränken die spätere Anzeige **nicht** auf ein bestimmtes Ziel. Der Sensor bzw. das Skript zeigt die früheste passende Abfahrt der ausdrücklich ausgewählten Position. Bei unvollständigen oder fehlerhaften Geodaten kann die eindeutige physische Zuordnung eingeschränkt sein. Mit **Abfahrten prüfen** lässt sich die Auswahl vorab plausibilisieren.
+
+### Beispielanzeige
+
+\`\`\`text
+[ 76 ]   8 min
+         Märzenbachweg > Aitrang, Gemeindeamt
+\`\`\`
+
+*Schematische Darstellung.* Auf dem 52 × 16-Pixel-Display bleibt die Liniennummer fest stehen, während längere Texte horizontal scrollen. Wahlweise wird statt des Countdowns die Abfahrtsuhrzeit angezeigt. Verspätungs- und Ausfallinformationen werden verwendet, **soweit die Quelle sie liefert**.
+
+### Datenquelle, Urheberrecht und Zuverlässigkeit
+
+TransitNext bezieht Orts-, Haltestellen- und Abfahrtsinformationen über **[Transitous](https://transitous.org/)** und die **[MOTIS-API](https://transitous.org/api/)**, insbesondere den Endpunkt \`/api/v6/stoptimes\`. Transitous bündelt Daten regionaler Verkehrsunternehmen und weiterer Fahrplananbieter.
+
+**Attribution / Datenquellen:** [Transitous – Sources](https://transitous.org/sources/) · [OpenStreetMap](https://www.openstreetmap.org/copyright)
+
+Fahrplandaten, Verspätungen, Echtzeitstatus und Haltepositionsinformationen sind abhängig von den zuliefernden Betreibern. Transitous ist ein ehrenamtlich betriebener **Best-Effort-Dienst** ohne Verfügbarkeitsgarantie. Die öffentliche API ist für **quelloffene, nicht kommerzielle und ressourcenschonende Anwendungen** vorgesehen; beachte die [Nutzungsbedingungen](https://transitous.org/api/). Bei wichtigen Fahrten die offiziellen Verkehrsauskünfte prüfen.
+
+### Lizenz und Projekt
+
+**Entwickler:** [Q14siX](https://github.com/Q14siX) · **Lizenz des Quellcodes:** [MIT](./LICENSE). Für Verkehrsdaten und Inhalte Dritter gelten deren eigene Lizenzen.
+
+TransitNext ist ein unabhängiges Community-Projekt, keine offizielle Anwendung von AWTRIX NG, Transitous oder Verkehrsunternehmen. Die Funktionsprüfung erfolgte mit simulierten API- und Geräteantworten; ein vollständiger Live-Test auf realer TC002-Hardware wurde nicht bestätigt.
+
+---
+
+## English
+
+### Features
+
+- **Next departure only:** Display the soonest available departure for each selected physical boarding position.
+- **Multiple stops:** Add, edit, remove, and reorder stops on one configuration page. AWTRIX NG cycles between the resulting native script apps.
+- **Bus, rail, and more:** Works wherever the Transitous data source offers public transport departures.
+- **Position-aware selection:** Different boarding positions sharing a stop name can remain separate; several destinations served by one position remain grouped.
+- **Direction hints:** Currently known destinations may help distinguish positions, but are **not permanent destination filters**.
+- **LED-friendly layout:** Colored route number, departure countdown or clock time, and scrolling stop-to-destination text, e.g. \`Märzenbachweg > Aitrang, Gemeindeamt\`.
+- **Customizable:** Automatic line colors, optional delay information, custom display colors, **1–30-minute** update interval, and **1–72-hour** search window.
+- **Standalone operation:** Native Berry script on the clock; no Home Assistant, MQTT, separate server, or API key.
+
+### Requirements
+
+ULANZI TC002 or compatible **52 × 16 AWTRIX NG** display with Berry scripting support; device Wi-Fi/internet access; modern browser. Direct installation requires local network connectivity between browser and device.
+
+### Setup and installation
+
+1. Download [Q14siX/TransitNext](https://github.com/Q14siX/TransitNext) using **Code → Download ZIP**, extract the archive, and open **\`TransitNext-Einrichtung.html\`** locally.
+2. Search for a **city**, choose it, and select the correct **physical stop/boarding position**.
+3. Click **Haltestelle hinzufügen** (Add stop) for each desired position. Set the display order.
+4. Configure the update interval, search window, and countdown/time display.
+5. Enter the AWTRIX NG IP address or hostname and click **Apps auf AWTRIX installieren / aktualisieren** (Install/update apps).
+
+**Manual alternative:** Use **Installationsdateien (.ax) herunterladen** (Download installation files). Import the generated \`.ax\` files via **AWTRIX NG → Scripts → Import → Save**. The included \`TransitNext.template.ax\` contains placeholders and is **not installation-ready** without configuration.
+
+### Changing existing stops
+
+Open the same setup page again, enter the device address, and click **Haltestellen von Uhr laden** (Load stops from device) **before making changes**. Add, replace, remove, or reorder entries, then synchronize. Up to **20** stops can be configured, subject to available device memory. Other AWTRIX apps are intended to be preserved.
+
+### Physical boarding positions vs. directions
+
+A named stop can include distinct boarding poles/platforms, while one pole may serve multiple destinations. TransitNext selects from provided stop IDs, geometry and platform information, with narrowly restricted matching of compatible nearby records (up to **8 metres**). Direction labels from current departures are **selection hints only**, not filters. Missing or incorrect upstream location data can prevent perfect distinction; use **Abfahrten prüfen** (Check departures) to verify a selection.
+
+### Data source, attribution, and limitations
+
+TransitNext retrieves stop and departure data from the **[Transitous](https://transitous.org/) [MOTIS API](https://transitous.org/api/)**, including \`/api/v6/stoptimes\`. Transitous aggregates feeds from local operators and public transit data publishers.
+
+**Source attribution and licenses:** [Transitous – Sources](https://transitous.org/sources/) · [OpenStreetMap](https://www.openstreetmap.org/copyright)
+
+Realtime information, delays, cancellations, and boarding-position accuracy depend on upstream data. Transitous is a volunteer-run **best-effort service**, without guaranteed availability. Its public API is intended for **open-source, non-commercial, resource-conscious applications**; see the [usage policy](https://transitous.org/api/). Confirm critical departures with the transport operator.
+
+**Author:** [Q14siX](https://github.com/Q14siX) · **Code license:** [MIT](./LICENSE). Transit data and third-party content retain their own licensing terms.
+
+TransitNext is an independent community project, not affiliated with AWTRIX NG, Transitous, or public transport operators. Setup and generated scripts have been tested against simulated API/device responses; complete live validation on physical ULANZI TC002 hardware has not yet been confirmed.
