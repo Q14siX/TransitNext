@@ -1,5 +1,7 @@
 # TransitNext
 
+<a href="https://buymeacoffee.com/q14six"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" width="200"></a>
+
 **Deine nächste Bus- oder Bahnabfahrt direkt auf AWTRIX NG.** / **Your next public transport departure on AWTRIX NG.**
 
 TransitNext ist eine eigenständige Abfahrtsanzeige für **AWTRIX NG auf der ULANZI TC002 (52 × 16 Pixel)**. Du verwaltest deine Haltepunkte zentral im Browser; die Uhr ruft die Abfahrtsdaten anschließend selbst über **Transitous/MOTIS** ab. **Kein Home Assistant, kein MQTT-Broker und kein zusätzlicher Server erforderlich.**
