@@ -1,0 +1,622 @@
+# @name TransitNext
+# @desc Naechste OEPNV-Abfahrt
+# @author Q14siX
+# @version 20261113.233708
+# @display 32x8
+# @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
+# @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=256 group="Haltestelle"
+# @config stop_name text "Haltestelle" default="__STOP_NAME__" maxlen=90 group="Haltestelle"
+# @config stop_label text "Haltepunkt" default="__STOP_LABEL__" maxlen=150 group="Haltestelle"
+# @config refresh number "Abrufintervall (Minuten)" default=__REFRESH__ min=1 max=30 step=1 group="Fahrplan"
+# @config search_hours number "Suchzeitraum (Stunden)" default=__HOURS__ min=1 max=72 step=1 group="Fahrplan"
+# @config mode select "Abfahrtsanzeige" default=__MODE__ options=countdown,time,time_delay group="Darstellung"
+# @config auto_line_colors bool "Linienfarben automatisch" default=true group="Darstellung"
+# @config line_color color "Linienfarbe" default=#8737CE group="Darstellung"
+# @config show_delay bool "Verspaetung anzeigen" default=true group="Darstellung"
+# @config hide_empty bool "Ohne Abfahrt ausblenden" default=__HIDE_EMPTY__ group="Darstellung"
+# @config zero_mode select "Bei 0 Minuten" default=__ZERO_MODE__ options=normal,bus group="Darstellung"
+# @config bus_direction select "Bus-Fahrtrichtung" default=__BUS_DIRECTION__ options=links_rechts,rechts_links group="Darstellung"
+# @config line_relief select "Liniennummer 3D-Stufe" default=__LINE_RELIEF__ options=1,2,3 help="1 Dezent, 2 Mittel, 3 Kraeftig" group="Darstellung"
+import json
+import string
+class TransitNext
+  var time_start
+  var stop_id, stop_ids, stop_name, short_stop, api_url, ticks, waiting, status
+  var selected, line_pixels, line_fallback, line_big, auto_color
+  var next_request, attempt_n, retry_stage, scan_after, scan_pages
+  var scroll_top, scroll_bottom, empty_confirmed, bus_start, bus_done
+  var last_ok, last_poll
+  def init()
+   self.time_start = 0
+   self.stop_id = ""
+   self.stop_ids = ""
+   self.stop_name = ""
+   self.short_stop = ""
+   self.api_url = ""
+   self.bus_done = false
+   self.empty_confirmed = false
+   self.last_ok = -1000000
+   self.last_poll = -1000000
+   self.bus_start = -1
+   self.ticks = 0
+   self.waiting = false
+   self.status = "Lade..."
+   self.selected = nil
+   self.line_pixels = []
+   self.line_fallback = "OEPNV"
+   self.line_big = false
+   self.auto_color = 0x8737CE
+   self.attempt_n = 2
+   self.retry_stage = 0
+   self.next_request = 0
+   self.scan_after = 0
+   self.scan_pages = 0
+   self.scroll_top = {"mode":"loop", "whenFits":"static", "speed":75, "gap":7}
+   self.scroll_bottom = {"mode":"loop", "whenFits":"static", "speed":65, "gap":8, "repeat":1}
+   self.prepare_line("-")
+  end
+  def setup()
+   self.stop_id = str(store.get("stop_id", ""))
+   self.stop_ids = str(store.get("stop_ids", self.stop_id))
+   self.stop_name = str(store.get("stop_name", ""))
+   self.short_stop = self.stop_name
+   var comma = string.find(self.short_stop, ", ")
+   if comma >= 0 && comma + 2 < size(self.short_stop)
+    self.short_stop = self.short_stop[comma + 2..-1]
+   end
+   self.api_url = "https://api.transitous.org/api/v6/stoptimes?stopId=" + self.stop_id + "&arriveBy=false&fetchStops=false&radius=25&exactRadius=true&n="
+  end
+  def iso_second(v)
+   if type(v) != "string" || size(v) < 20 return nil end
+   if v[4] != "-" || v[7] != "-" || v[10] != "T" || v[13] != ":" || v[16] != ":" return nil end
+   for i : [0,1,2,3,5,6,8,9,11,12,14,15,17,18]
+    if string.find("0123456789", v[i..i]) < 0 return nil end
+   end
+   var y = num(v[0..3])
+   var m = num(v[5..6])
+   var d = num(v[8..9])
+   var hh = num(v[11..12])
+   var mm = num(v[14..15])
+   var ss = num(v[17..18])
+   if y < 1970 || m < 1 || m > 12 || hh > 23 || mm > 59 || ss > 59 return nil end
+   var days = [31,28,31,30,31,30,31,31,30,31,30,31]
+   if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) days[1] = 29 end
+   if d < 1 || d > days[m - 1] return nil end
+   var off = 0
+   var tail = size(v) - 1
+   if v[-1] != "Z"
+    if size(v) < 25 || v[-3] != ":" return nil end
+    var sign = v[-6]
+    if sign != "+" && sign != "-" return nil end
+    for i : [size(v)-5,size(v)-4,size(v)-2,size(v)-1]
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+    var oh = num(v[-5..-4])
+    var om = num(v[-2..-1])
+    if oh > 23 || om > 59 return nil end
+    off = (oh * 60 + om) * 60
+    if sign == "-" off = -off end
+    tail = size(v) - 6
+   end
+   if tail > 19
+    if v[19] != "." || tail == 20 return nil end
+    for i : 20 .. tail - 1
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+   end
+   if m <= 2 y -= 1 end
+   var era = int(y / 400)
+   var yoe = y - era * 400
+   var adj = m > 2 ? m - 3 : m + 9
+   var doy = int((153 * adj + 2) / 5) + d - 1
+   var doe = yoe * 365 + int(yoe / 4) - int(yoe / 100) + doy
+   return ((era * 146097 + doe - 719468) * 1440 + hh * 60 + mm) * 60 + ss - off
+  end
+  def local_time(timestamp)
+   var utc = epoch_ms() / 60000
+   var shift = (hour() * 60 + minute() - (utc % 1440) + 1440) % 1440
+   if shift > 720 shift -= 1440 end
+   var local = (int(timestamp / 60) + shift + 1440) % 1440
+   return format("%02d:%02d", int(local / 60), int(local % 60))
+  end
+  def utc_iso(value)
+   var secs = value % 60
+   value = int(value / 60)
+   var days = int(value / 1440)
+   var mins = value % 1440
+   if mins < 0
+    mins += 1440
+    days -= 1
+   end
+   var z = days + 719468
+   var era = int((z >= 0 ? z : z - 146096) / 146097)
+   var doe = z - era * 146097
+   var yoe = int((doe - int(doe / 1460) + int(doe / 36524) - int(doe / 146096)) / 365)
+   var yy = yoe + era * 400
+   var doy = doe - (365 * yoe + int(yoe / 4) - int(yoe / 100))
+   var mp = int((5 * doy + 2) / 153)
+   var dd = doy - int((153 * mp + 2) / 5) + 1
+   var mm = mp + (mp < 10 ? 3 : -9)
+   if mm <= 2 yy += 1 end
+   return format("%04d-%02d-%02dT%02d:%02d:%02dZ", yy, mm, dd, int(mins / 60), int(mins % 60), secs)
+  end
+  def stop_matches(place)
+   if !isinstance(place, map) return false end
+   var actual = place.find("stopId")
+   if type(actual) != "string" return false end
+   # Only explicitly selected boarding-position IDs are permitted.
+   return string.find("|" + self.stop_ids + "|", "|" + actual + "|") >= 0
+  end
+  def build(event)
+   if !isinstance(event, map) return nil end
+   if event.find("cancelled", false) || event.find("tripCancelled", false) return nil end
+   if event.find("pickupDropoffType") == "NOT_ALLOWED" return nil end
+   var place = event.find("place")
+   if !self.stop_matches(place) return nil end
+   if place.find("cancelled", false) || place.find("pickupType") == "NOT_ALLOWED" return nil end
+   var predicted = self.iso_second(place.find("departure"))
+   var epoch = predicted
+   if epoch == nil epoch = self.iso_second(place.find("scheduledDeparture")) end
+   if epoch == nil return nil end
+   var now = int(epoch_ms() / 1000)
+   if epoch < now - 30 return nil end
+   var horizon = clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+   if epoch > now + horizon return nil end
+   var direction = event.find("headsign")
+   if type(direction) != "string" || direction == ""
+    var terminal = event.find("tripTo")
+    if isinstance(terminal, map) direction = terminal.find("name") end
+   end
+   if type(direction) != "string" || direction == "" direction = "Richtung unbekannt" end
+   var line = event.find("routeShortName", event.find("displayName", ""))
+   if line == nil || str(line) == ""
+    var kind = event.find("mode", "OEPNV")
+    line = kind == "BUS" ? "BUS" : kind == "TRAM" ? "TRAM" : "ZUG"
+   end
+   var scheduled = self.iso_second(place.find("scheduledDeparture"))
+   var delta = scheduled == nil ? 0 : epoch - scheduled
+   var delay = delta < 0 ? -int((-delta + 30) / 60) : int((delta + 30) / 60)
+   return {
+    "epoch": epoch,
+    "scheduled": scheduled,
+    "line": str(line),
+    "mode": str(event.find("mode", "TRANSIT")),
+    "direction": direction,
+    "delay": delay,
+    "realtime": predicted != nil && event.find("realTime", false)
+   }
+  end
+  def color_line(value)
+   var digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   var n = 0
+   var v = string.toupper(value)
+   for i : 0 .. size(v) - 1
+    var x = string.find(digits, v[i..i])
+    if x >= 0 n = (n * 37 + x + 1) % 360 end
+   end
+   return hsv((n * 137 + 280) % 360, 83, 59)
+  end
+  def prepare_line(value)
+   self.line_fallback = value
+   self.auto_color = self.color_line(value)
+  end
+  def request()
+   if self.waiting return end
+   if epoch_ms() < 1000000000000
+    self.empty_confirmed = false
+    self.status = "Warte auf Uhrzeit"
+    self.ticks = 20
+    return
+   end
+   if self.stop_id == ""
+    self.status = "Haltestelle waehlen"
+    self.ticks = 300
+    return
+   end
+   self.waiting = true
+   self.last_poll = now_ms()
+   self.next_request = 0
+   if self.selected == nil self.status = "Lade..." end
+   self.ticks = clamp(num(store.get("refresh"), 5), 1, 30) * 60
+   var url = self.api_url + str(self.attempt_n)
+   if self.scan_after > 0 url += "&time=" + self.utc_iso(self.scan_after) end
+   http.get(url, / body, code -> self.on_reply(body, code),
+    {"find":"\"stopTimes\":", "keep":6000, "cap":8192,
+     "headers":{"Accept":"application/json", "User-Agent":"TransitNext-AWTRIX"}})
+  end
+  def parse_events(body)
+   var pos = string.find(body, "[")
+   if pos < 0 return nil end
+   var result = []
+   var cursor = pos + 1
+   while cursor < size(body)
+    var ch = body[cursor..cursor]
+    if ch == " " || ch == "\n" || ch == "\t" || ch == "\r" || ch == ","
+     cursor += 1
+     continue
+    end
+    if ch == "]" return {"events":result, "complete":true} end
+    if ch != "{" return nil end
+    var start = cursor
+    var depth = 0
+    var quoted = false
+    var escaped = false
+    while cursor < size(body)
+     ch = body[cursor..cursor]
+     if quoted
+      if escaped
+       escaped = false
+      elif ch == "\\"
+       escaped = true
+      elif ch == "\""
+       quoted = false
+      end
+     elif ch == "\""
+      quoted = true
+     elif ch == "{"
+      depth += 1
+     elif ch == "}"
+      depth -= 1
+      if depth == 0
+       var item = json.load(body[start..cursor])
+       if !isinstance(item, map) return nil end
+       result.push(item)
+       cursor += 1
+       break
+      end
+     end
+     cursor += 1
+    end
+    if depth != 0 return {"events":result, "complete":false} end
+   end
+   return {"events":result, "complete":false}
+  end
+  def on_reply(body, code)
+   self.waiting = false
+   if code != 200
+    self.empty_confirmed = false
+    self.status = code == 0 ? "Netz/Timeout" : "HTTP " + str(code)
+    self.ticks = 120
+    return
+   end
+   if body == nil
+    self.retry("Antwort zu gross")
+    return
+   end
+   try
+    var parsed = self.parse_events(body)
+    if !isinstance(parsed, map)
+     self.retry("API-Format")
+     return
+    end
+    var best = nil
+    var now = int(epoch_ms() / 1000)
+    for item : parsed["events"]
+     var ev = self.build(item)
+     if ev != nil && (best == nil || ev["epoch"] < best["epoch"])
+      best = ev
+     end
+    end
+    if best != nil
+     self.empty_confirmed = false
+     self.bus_start = -1
+     self.bus_done = false
+     self.last_ok = now_ms()
+     self.selected = best
+     self.prepare_line(best["line"])
+     self.status = "OK"
+     self.retry_stage = 0
+     self.attempt_n = 2
+     self.scan_after = 0
+     self.scan_pages = 0
+     return
+    end
+    if !parsed["complete"]
+     self.retry("Antwort unvollstaendig")
+     return
+    end
+    # A page with only cancelled or unrelated stops is not an empty timetable.
+    if size(parsed["events"]) > 0
+     var last = 0
+     for item : parsed["events"]
+      var place = item.find("place")
+      if isinstance(place, map)
+       var stamp = self.iso_second(place.find("departure", place.find("scheduledDeparture")))
+       if stamp != nil && stamp > last last = stamp end
+      end
+     end
+     var horizon = now + clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+     if last > now && last < horizon && self.scan_pages < 10
+      self.scan_after = last + 1
+      self.scan_pages += 1
+      self.retry_stage = 0
+      self.attempt_n = 2
+      self.next_request = now_ms() + 3500
+      self.status = "Suche weitere Abfahrten"
+      return
+     end
+     if self.scan_pages >= 10 || last <= now
+      self.empty_confirmed = false
+      self.status = "Noch keine passende Abfahrt"
+      self.ticks = 120
+      return
+     end
+    end
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = true
+    self.status = "Keine Abfahrt in " + str(store.get("search_hours", 24)) + "h"
+    self.retry_stage = 0
+    self.attempt_n = 2
+    self.scan_after = 0
+    self.scan_pages = 0
+   except .. as err, message
+    self.retry("Antwort unlesbar")
+    log("TransitNext: " + str(message))
+   end
+  end
+  def retry(reason)
+   self.empty_confirmed = false
+   if self.retry_stage == 0
+    self.retry_stage = 1
+    self.attempt_n = 2
+    self.next_request = now_ms() + 7000
+    self.status = "Abfrage verkleinert"
+   elif self.retry_stage == 1
+    self.retry_stage = 2
+    self.attempt_n = 1
+    self.next_request = now_ms() + 7000
+    self.status = "Pruefe Einzelabfahrt"
+   else
+    self.status = reason
+    self.next_request = 0
+    self.ticks = 120
+    log("TransitNext: " + reason)
+   end
+  end
+  def loop()
+   if self.selected != nil && self.remaining() <= 300000 && now_ms() - self.last_poll >= 60000 && !self.waiting && self.next_request == 0
+    self.ticks = 0
+   end
+   if self.selected != nil && self.remaining() < -30000
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = false
+    self.bus_start = -1
+    self.status = "Suche naechste..."
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+   end
+   if !self.waiting && self.next_request > 0 && now_ms() >= self.next_request
+    self.next_request = 0
+    self.request()
+   elif !self.waiting && self.next_request == 0 && self.ticks <= 0
+    self.retry_stage = 0
+    self.attempt_n = 2
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.request()
+   end
+   self.ticks -= 1
+  end
+  def on_button(btn)
+   if btn == "select"
+    self.next_request = 0
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.attempt_n = 2
+    if !self.waiting self.request() end
+    return true
+   end
+   return false
+  end
+  def should_show()
+   return !(store.get("hide_empty", true) && self.empty_confirmed && self.selected == nil)
+  end
+  def on_show()
+   self.time_start = now_ms()
+   self.bus_start = -1
+   self.bus_done = false
+  end
+  def shade(c, amount)
+   var r = (c >> 16) & 255
+   var g = (c >> 8) & 255
+   var b = c & 255
+   var target = amount > 0 ? 255 : 0
+   var mix = amount > 0 ? amount : -amount
+   return rgb(r + int((target - r) * mix / 100), g + int((target - g) * mix / 100), b + int((target - b) * mix / 100))
+  end
+  def draw_badge(c, w, h)
+   var level = int(clamp(num(store.get("line_relief", 2), 2), 1, 3))
+   rect_fill(0, 0, w, h, c)
+   if level > 1
+    for y : 1 .. h - 2
+     var tint = int((level - 1) * 14 * (h - 1 - 2 * y) / (h - 1))
+     rect_fill(1, y, w - 2, 1, self.shade(c, tint))
+    end
+   end
+   var light = self.shade(c, 15 + 12 * level)
+   var dark = self.shade(c, -18 - 12 * level)
+   line(0, 0, w - 2, 0, light)
+   line(0, 1, 0, h - 2, light)
+   line(0, h - 1, w - 1, h - 1, dark)
+   line(w - 1, 0, w - 1, h - 2, dark)
+  end
+  def remaining()
+   var now = epoch_ms()
+   return (self.selected["epoch"] - int(now / 1000)) * 1000 - int(now % 1000)
+  end
+  def fresh()
+   return self.status == "OK" && now_ms() - self.last_ok <= 120000
+  end
+  def centered_time(left, baseline, span)
+   var pieces = self.time_segments()
+   var total = ""
+   for piece : pieces
+    total += piece[0]
+   end
+   total = text_ink_width(total)
+   if total > span
+    scroll_text(left, baseline, span, pieces, store.get("time_color", 0xFFC247), self.scroll_top)
+    return
+   end
+   var x = left + int((span - total) / 2)
+   for piece : pieces
+    text(x, baseline, piece[0], piece[1])
+    x += text_width(piece[0])
+   end
+  end
+  def time_label()
+   var mode = store.get("mode", "time_delay")
+   if mode == "countdown"
+    return str(max(0, int(self.remaining() / 60000))) + "min"
+   end
+   if mode == "time_delay" && self.selected["scheduled"] != nil
+    return self.local_time(self.selected["scheduled"])
+   end
+   return self.local_time(self.selected["epoch"])
+  end
+  def time_segments()
+   var main = self.time_label()
+   var color = store.get("time_color", 0xFFC247)
+   var pieces = [[main, color]]
+   if store.get("mode", "time_delay") == "time_delay" && store.get("show_delay", true) && self.selected["realtime"] && self.selected["scheduled"] != nil
+    var delay = self.selected["delay"]
+    var suffix = delay >= 0 ? "+" + str(delay) : str(delay)
+    var tint = delay > 0 ? 0xFF3030 : delay == 0 ? 0xFFD000 : 0x39DB7B
+    pieces.push([" " + suffix, tint])
+   end
+   return pieces
+  end
+  def bus_due()
+   if self.selected == nil || !self.fresh() return false end
+   var mode = self.selected["mode"]
+   return store.get("zero_mode", "bus") == "bus" && (mode == "BUS" || mode == "COACH") && self.remaining() < 60000 && self.remaining() >= -30000
+  end
+  def duration()
+   if self.bus_due() return 15000 end
+   return 12000
+  end
+  def draw_bus(left)
+   if self.bus_start < 0 self.bus_start = now_ms() end
+   var t = now_ms() - self.bus_start
+   if t >= 6200 return true end
+   var span = width() - left
+   var bw = span - 2
+   var bh = min(height(), 14)
+   var top = int((height() - bh) / 2)
+   var mid = int((span - bw) / 2)
+   var x = mid
+   if t < 2000
+    x = -bw + int((mid + bw) * t * (4000 - t) / 4000000)
+   elif t >= 4200
+    var dt = t - 4200
+    x = mid + int((span - mid) * dt * dt / 4000000)
+   end
+   var reverse = store.get("bus_direction", "links_rechts") == "rechts_links"
+   var door = 0
+   if !reverse && t >= 2300 && t < 3900
+    if t < 2700
+     door = min(2, int((t - 2300) / 200) + 1)
+    elif t < 3500
+     door = 2
+    else
+     door = max(0, 2 - int((t - 3500) / 200))
+    end
+   end
+   var window_end = bh - 5
+   var dx = bw - 6
+   var dw = 4
+   var fw = bw - 11
+   if bh == 8
+    dx = bw - 4
+    dw = 3
+    fw = bw - 8
+   end
+   for y : 0 .. bh - 1
+    for col : 0 .. bw - 1
+     var c = -1
+     if y == 0 && col >= 2 && col < bw - 3 c = 0xFFF0B0 end
+     if y >= 1 && y < bh - 2
+      if (col > 0 && col < bw - 1) || y >= 3
+       c = 0xF5B62B
+       if y >= bh - 4 c = 0xCB7417 end
+       if y >= 2 && y <= window_end && col >= 2 && col < bw - 2
+        c = 0x89D6F2
+        if col % 6 == 1 c = 0x254453 end
+       end
+       if col == bw - 1 && y >= 3 && y <= window_end c = 0xC1EAF7 end
+       if y == bh - 4 && col == bw - 1 c = 0xFFF9CD end
+       if y == bh - 4 && col == 0 c = 0xF04430 end
+       if !reverse && col >= dx && col < dx + dw && y >= 2 && y < bh - 2
+        c = 0x31434A
+        if y <= window_end c = 0x9BDEEC end
+        if col == dx + 1 || col == dx + 2 c = 0x536168 end
+        if door > 0 && col >= dx + 2 - door && col < dx + 2 + door
+         c = 0x10181E
+         if y == bh - 3 c = 0xBCC5C7 end
+        end
+       end
+      end
+     end
+     if y >= bh - 3 && ((col >= 3 && col <= 6) || (col >= fw - 1 && col <= fw + 2))
+      c = 0x1B252E
+      if y == bh - 2 && (col == 4 || col == fw) c = 0xB5C2CB end
+     end
+     var px = left + x + col
+     if reverse px = left + span - 1 - x - col end
+     if c >= 0 && px >= left && px < width() pixel(px, top + y, c) end
+    end
+   end
+   return false
+  end
+  def draw()
+   clear()
+   font("small")
+   if width() < 32 || height() != 8
+    scroll_text("TransitNext: 32x8", 0xFFC247)
+    return
+   end
+   var c = store.get("line_color", 0x8737CE)
+   if store.get("auto_line_colors", true) c = self.auto_color end
+   var badge = int(clamp(text_ink_width(self.line_fallback) + 2, 7, 13))
+   self.draw_badge(c, badge, 8)
+   if text_ink_width(self.line_fallback) <= badge - 2
+    text(1, 6, self.line_fallback, 0xFFFFFF)
+   else
+    scroll_text(1, 6, badge - 2, self.line_fallback, 0xFFFFFF, self.scroll_top)
+   end
+   var left = badge + 1
+   var label = self.status
+   var route = self.short_stop
+   if self.selected != nil
+    label = self.time_label()
+    route += " > " + self.selected["direction"]
+    if self.bus_due() && !self.bus_done
+     self.bus_done = self.draw_bus(left)
+     if !self.bus_done return end
+    end
+   end
+   var elapsed = now_ms() - self.time_start
+   if self.bus_due() elapsed -= 6200 end
+   var hold = 3000
+   if self.selected != nil
+    var runs = self.time_segments()
+    var ink = 0
+    for run : runs
+     ink += text_width(run[0])
+    end
+    if ink > width() - left hold = max(hold, (ink + 7) * 75 + 1000) end
+   end
+   if self.selected == nil
+    scroll_text(left, 6, width() - left, [[label, 0xFFC247], ["  " + route, 0xFFFFFF]], 0xFFFFFF, self.scroll_bottom)
+   elif elapsed < hold
+    self.centered_time(left, 6, width() - left)
+   else
+    scroll_text(left, 6, width() - left, route, store.get("text_color", 0xFFFFFF), self.scroll_bottom)
+   end
+  end
+end
+return TransitNext()

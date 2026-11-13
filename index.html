@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0c1524"><title>TransitNext – Einrichtung</title><style>:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:dark;--bg:#09111f;--surface:#151f31;--surface2:#1a293e;--muted:#a5b5ca;--edge:#2c405c;--primary:#9875f7;--blue:#508bff;--ink:#f5f7fc;--good:#4fd2ac;--warn:#ffc46e;--bad:#ff7c91;background:var(--bg);color:var(--ink)}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 30% -15%,#29335a 0,transparent 53%),radial-gradient(ellipse at 100% 18%,#102d44 0,transparent 30%),var(--bg)}button,input,select,textarea{font:inherit}button{cursor:pointer;color:var(--ink);border:1px solid #586088;background:#293851;border-radius:11px;padding:11px 15px;font-weight:700;min-height:42px}button:hover:not(:disabled){filter:brightness(1.13)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #bea5ff;outline-offset:2px}button:disabled{opacity:.48;cursor:not-allowed}.primary{background:linear-gradient(105deg,#8b55dd,#4f69d9);border-color:#967fe3}.ghost{background:#1b2a41;border-color:#435773}.danger{background:#4a2839;border-color:#a05a71;color:#ffcad2}.small{padding:8px 11px;font-size:12px;min-height:34px}.wrap{max-width:1190px;margin:0 auto;padding:30px 22px 45px}.top{display:flex;align-items:center;gap:15px;margin:0 0 22px}.mark{width:57px;height:57px;flex-shrink:0;border-radius:17px;display:grid;place-items:center;font-size:27px;background:linear-gradient(135deg,#8552e4,#315ec4);box-shadow:0 12px 26px #433f9a45}h1{margin:0;font-size:clamp(26px,4vw,35px);letter-spacing:-.05em}h2{margin:0 0 9px;font-size:19px;letter-spacing:-.025em}h3{margin:0;font-size:15px}.top p{margin:4px 0 0}.muted{color:var(--muted)}.tiny{font-size:12px}.eyebrow{color:#c6afff;text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:800}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:0 0 20px}.step{border:1px solid var(--edge);background:#172238;border-radius:12px;padding:12px 10px;text-align:left;display:flex;align-items:center;gap:10px;min-height:59px}.step .number{border-radius:10px;background:#243550;min-width:29px;height:29px;display:grid;place-items:center;font-weight:800;font-size:13px}.step.current{border-color:#ab84ff;background:#322b50}.step.current .number{background:#7b56ce}.step.done .number{background:#245747;color:#abffe2}.step .step-copy{min-width:0}.step strong{display:block;font-size:13px}.step small{display:block;font-size:11px;color:var(--muted)}.section{display:none}.section.active{display:block}.panel{padding:23px;border:1px solid var(--edge);background:linear-gradient(160deg,#172235,#131e2e);border-radius:17px;margin:0 0 15px;box-shadow:0 6px 22px #0002;min-width:0}.panel-head{display:flex;gap:12px;align-items:start;justify-content:space-between;margin-bottom:17px}.panel-head p{margin:0}.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:15px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.stack{display:grid;gap:13px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row.between{justify-content:space-between}.field{display:flex;flex-direction:column;gap:7px;min-width:0}.field label{font-size:13px;font-weight:650}.field input,.field select{width:100%;height:43px;background:#0e1b2c;border:1px solid #3b506b;color:#f0f6ff;border-radius:9px;padding:9px 12px;min-width:0}.field input[type=checkbox]{height:auto;width:auto;accent-color:var(--primary)}.field small{color:var(--muted);font-size:12px;line-height:1.45}.inputgroup{display:flex;gap:9px}.inputgroup input{flex:1}.inputgroup button{white-space:nowrap}.separator{border:0;border-top:1px solid var(--edge);margin:17px 0}.devices{display:grid;gap:12px}.device{border:1px solid #3b4d68;background:#101c2d;border-radius:14px;padding:16px;min-width:0}.device.selected{border-color:#6d6cae}.device-heading{display:flex;align-items:start;gap:10px;justify-content:space-between;flex-wrap:wrap}.device-heading .title{min-width:0;flex:1}.device-heading strong{font-size:15px;overflow-wrap:anywhere}.device-heading p{font-size:12px;color:var(--muted);margin:3px 0 0}.pill{border:1px solid #49617b;border-radius:50px;padding:4px 9px;font-size:11px;font-weight:750;color:#c8d4e7;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}.pill.good{border-color:#337e72;color:#8ef2c9}.pill.error{border-color:#a34b67;color:#ffb8c4}.pill.warn{border-color:#a27b3d;color:#ffe1a2}.device-tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.statusline{border:1px solid #3b4e66;background:#111e31;border-radius:10px;padding:11px 13px;color:#c4d3e6;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.statusline.good{border-color:#38776d;color:#9fedc7}.statusline.error{border-color:#a15166;color:#ffc6d0}.statusline.warn{border-color:#9a7744;color:#ffdfaa}.clock-list{display:grid;gap:8px;margin-top:13px}.installed{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,220px);gap:10px;align-items:center;border:1px solid #344963;border-radius:11px;padding:12px;background:#152337}.installed .name{font-weight:750;font-size:13px;overflow-wrap:anywhere}.installed .detail{font-size:11px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}.no-content{border:1px dashed #405572;border-radius:11px;padding:17px;color:var(--muted);text-align:center;font-size:13px}.select-chip{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #41556d;border-radius:10px;background:#112035;cursor:pointer;font-size:13px}.select-chip input,.device-heading input,.installed input{accent-color:#a77cff;width:16px;height:16px}.add-entry{border:1px solid #41516b;border-radius:12px;padding:13px;background:#101c2c;display:flex;gap:11px;flex-direction:column}.label{font-weight:650}.badge-number{border-radius:7px;background:#2d3557;padding:4px 8px;color:#d7c9ff;font-size:11px}.confirm{text-align:right}.footer{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:19px 0 0}.footer>.row{flex-wrap:wrap}.footer-note{font-size:12px;color:var(--muted);flex:1}.kbdnote{font-size:12px;color:var(--muted);line-height:1.55;margin:10px 0 0}.links{display:flex;gap:8px;flex-wrap:wrap}.links a{color:#c0d4ff;border-bottom:1px solid #6b83b3;text-decoration:none;font-size:12px}.empty-alert{padding:14px;border:1px solid #745b50;color:#ffd6b1;border-radius:11px;background:#2a2430}.checkline{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:13px}.checkline input{accent-color:#9974ec;width:17px;height:17px}.summary-card{background:#0f1e31;border:1px solid #3b4f69;padding:15px;border-radius:12px}.summary-card h3{margin-bottom:12px}.summary-item{display:flex;align-items:start;gap:9px;justify-content:space-between;padding:6px 0;font-size:12px}.summary-item:not(:last-child){border-bottom:1px solid #273d52}.spacer{height:9px}.danger-confirm{padding:13px;border:1px solid #98566b;border-radius:11px;background:#311d2a}.danger-confirm label{display:block;color:#ffd4dd;font-size:13px;margin-bottom:7px}.danger-confirm input{width:220px;max-width:100%;padding:9px;color:white;background:#0f1828;border:1px solid #a85a73;border-radius:8px}.loader{width:16px;height:16px;border:2px solid #627394;border-top-color:#c3a1ff;border-radius:50%;display:inline-block;animation:spin .75s linear infinite;flex-shrink:0}@keyframes spin{to{transform:rotate(360deg)}}[hidden]{display:none!important}.mobile-short{display:none}.icon-btn{min-width:35px}.selection-note{color:#d6d7f9;font-size:12px;margin:6px 0}.dark-note{background:#101b2a;padding:10px;border-radius:10px;font-size:12px;color:#9fc3e1}.footline{font-size:11px;color:#7f94b1;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:22px 0 0}.footline a{color:#b8b0f0}@media(max-width:900px){.two,.three{grid-template-columns:1fr}.installed{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.steps .step{min-height:56px}}@media(max-width:570px){.wrap{padding:16px 12px 30px}.panel{padding:16px;border-radius:13px}.top{gap:11px}.mark{width:46px;height:46px;font-size:23px}.steps{gap:7px}.step{padding:9px 8px;gap:7px}.step small{font-size:10px}.step strong{font-size:12px}.step .number{min-width:25px;height:25px}.inputgroup{flex-wrap:wrap}.inputgroup>*{width:100%}.device{padding:12px}.footer{align-items:stretch}.footer>.row{justify-content:flex-end}.mobile-short{display:block}.hide-mobile{display:none}.field input,.field select{font-size:16px}.footline{justify-content:center;text-align:center}}
+
+.stop-actions{margin-top:24px;margin-bottom:16px;align-items:stretch}.stop-actions button{min-width:180px}.open-clock{margin-top:13px;width:max-content;max-width:100%;white-space:normal;text-align:center}.departure-row{padding:9px 0;border-top:1px solid #2b415a;margin-top:7px;font-size:13px;overflow-wrap:anywhere}@media(max-width:570px){.stop-actions{margin-top:20px;gap:10px}.stop-actions button{flex:1 1 100%;min-width:0}.open-clock{width:100%}}
+.coffee-link{display:inline-flex;align-items:center;justify-content:center;max-width:100%;flex-shrink:0}.coffee-link img{display:block;max-width:100%;height:auto;border:0}.coffee-link:focus-visible{outline:2px solid #bea5ff;outline-offset:4px;border-radius:4px}.network-consent{margin-top:4px;align-items:flex-start;line-height:1.45}.network-consent input{flex:0 0 auto;margin-top:3px}</style></head>
+<body><main class="wrap">
+<header class="top"><div class="mark" aria-hidden="true">🚉</div><div><div class="eyebrow">AWTRIX NG · INSTALLATIONSASSISTENT</div><h1>TransitNext</h1><p class="muted tiny">Haltestellen pro Uhr verwalten – neue Installationen, Updates und Löschungen getrennt.</p></div></header>
+<nav class="steps" aria-label="Einrichtungsschritte">
+<button type="button" class="step current" data-step="0"><span class="number">1</span><span class="step-copy"><strong>Uhren</strong><small>Erkennen & auslesen</small></span></button>
+<button type="button" class="step" data-step="1"><span class="number">2</span><span class="step-copy"><strong>Haltestellen</strong><small>Verwalten</small></span></button>
+<button type="button" class="step" data-step="2"><span class="number">3</span><span class="step-copy"><strong>Darstellung</strong><small>Optionen wählen</small></span></button>
+<button type="button" class="step" data-step="3"><span class="number">4</span><span class="step-copy"><strong>Abschluss</strong><small>Prüfen & installieren</small></span></button>
+</nav>
+<section class="section active" id="page0" aria-labelledby="head0"><div class="panel"><div class="panel-head"><div><h2 id="head0">Uhren finden und prüfen</h2><p class="muted tiny">Erst nach einer gestarteten Suche oder dem manuellen Verbinden werden Uhren und vorhandene TransitNext-Haltestellen geprüft.</p></div></div><div class="two"><div class="stack"><div class="field"><label for="subnet">Netzwerk durchsuchen</label><div class="inputgroup"><input id="subnet" value="192.168.178.0/24" inputmode="decimal" aria-label="Netzbereich"><button id="scanStart" class="primary" disabled>Netzwerk scannen</button><button id="scanStop" class="danger" hidden>Stoppen</button></div><label class="checkline network-consent" for="scanConsent"><input id="scanConsent" type="checkbox">Ich möchte in diesem lokalen Netzwerk nach AWTRIX-NG-Uhren suchen.</label><small>Start ausschließlich nach ausdrücklicher Freigabe. Chrome kann dafür die Berechtigung zum Zugriff auf das lokale Netzwerk anfordern.</small></div><p id="scanProgress" class="statusline" role="status">Noch keine Netzwerksuche gestartet.</p></div><div class="stack"><div class="field"><label for="address">Uhr per IP-Adresse hinzufügen</label><div class="inputgroup"><input id="address" placeholder="192.168.178.55" autocomplete="off"><button id="addDevice" class="primary">Verbinden</button></div><small>Das Modell wird automatisch erkannt; die vorhandenen Haltestellen werden direkt geladen.</small></div><div class="row"><button class="ghost small" id="configImport">Konfiguration laden</button><button class="ghost small" id="configExport">Konfiguration sichern</button><input id="configFile" type="file" accept="application/json,.json" hidden></div><p class="muted tiny">Adressen und Einstellungen werden lokal im Browser gespeichert. Zugangsdaten werden nicht gespeichert.</p></div></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Erkannte Uhren <span class="badge-number" id="deviceCount">0</span></h2><p class="muted tiny">Die Inventur wird für jede Uhr unabhängig durchgeführt. Erst nach erfolgreichem Auslesen ist sie bereit.</p></div><button class="ghost small" id="reloadAll">Alle erneut prüfen</button></div><div id="deviceCards" class="devices"><div class="no-content">Noch keine Uhren hinzugefügt.</div></div></div></section>
+<section class="section" id="page1" aria-labelledby="head1"><div class="panel"><div class="panel-head"><div><h2 id="head1">Vorhandene Haltestellen</h2><p class="muted tiny">Pro Uhr einzeln entscheiden: Beibehalten, Aktualisieren oder Löschen. Keine Aktion ist vorausgewählt; ohne Auswahl bleibt alles unverändert.</p></div></div><div class="stack" id="existingCards"></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Weitere Haltestellen hinzufügen</h2><p class="muted tiny">Bahnsteig oder Bussteig nach tatsächlicher Fahrtrichtung auswählen. Alle Linien desselben Steigs werden gemeinsam angezeigt.</p></div></div><div class="two"><div class="stack"><div class="field"><label for="citySearch">Ort suchen</label><div class="inputgroup"><input id="citySearch" placeholder="z. B. Kaufbeuren" ><button id="cityFind" class="ghost">Suchen</button></div></div><div class="field"><label for="cityChoice">Ort auswählen</label><select id="cityChoice" disabled><option value="">Bitte zuerst Ort suchen</option></select></div></div><div class="stack"><div class="field"><label for="stopFilter">Haltestellen filtern</label><input id="stopFilter" placeholder="Name der Haltestelle" disabled></div><div class="field"><label for="stopChoice">Bahnsteig / Fahrtrichtung auswählen</label><select id="stopChoice" disabled><option value="">Bitte zuerst Ort wählen</option></select></div></div></div><div class="row stop-actions"><button class="primary" id="stopAdd" disabled>Haltestelle hinzufügen</button><button class="ghost" id="stopTest" disabled>Abfahrten prüfen</button></div><p class="statusline" id="searchStatus" role="status">Noch keine Haltestelle ausgewählt.</p><div id="departureResult" class="summary-card" hidden></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Neu hinzuzufügen <span class="badge-number" id="additionCount">0</span></h2><p class="muted tiny">Alle neuen Haltestellen werden automatisch auf den im ersten Schritt ausgewählten Uhren installiert. Bereits vorhandene Haltestellen werden nicht doppelt installiert.</p></div></div><div id="additionList" class="stack"><div class="no-content">Keine neuen Haltestellen vorgemerkt.</div></div></div></section>
+<section class="section" id="page2" aria-labelledby="head2"><div class="panel"><div class="panel-head"><div><h2 id="head2">Anzeigeeinstellungen</h2><p class="muted tiny">Gilt für neue Installationen sowie ausdrücklich zur Aktualisierung markierte Haltestellen, wenn du die Option aktivierst.</p></div></div><div class="three"><div class="field"><label for="interval">Aktualisierung</label><select id="interval"><option value="">Bitte auswählen</option><option value="1">1 Minute</option><option value="2">2 Minuten</option><option value="5">5 Minuten</option><option value="10">10 Minuten</option><option value="15">15 Minuten</option><option value="30">30 Minuten</option></select></div><div class="field"><label for="horizon">Suchzeitraum</label><select id="horizon"><option value="">Bitte auswählen</option><option value="1">1 Stunde</option><option value="2">2 Stunden</option><option value="6">6 Stunden</option><option value="12">12 Stunden</option><option value="24">24 Stunden</option><option value="48">48 Stunden</option><option value="72">72 Stunden</option></select></div><div class="field"><label for="mode">Zeitanzeige</label><select id="mode"><option value="">Bitte auswählen</option><option value="countdown">Minuten</option><option value="time">Uhrzeit</option><option value="time_delay">Uhrzeit + Live-Verspätung</option></select></div><div class="field"><label for="hideEmpty">Ohne Abfahrt</label><select id="hideEmpty"><option value="">Bitte auswählen</option><option value="false">App weiter anzeigen</option><option value="true">In Rotation überspringen</option></select></div><div class="field"><label for="zeroMode">Bei 0 Minuten</label><select id="zeroMode"><option value="">Bitte auswählen</option><option value="normal">Normale Anzeige</option><option value="bus">Busanimation</option></select></div><div class="field"><label for="relief">Linienfeld 3D-Stärke</label><select id="relief"><option value="">Bitte auswählen</option><option value="1">1 – Dezent</option><option value="2">2 – Mittel</option><option value="3">3 – Kräftig</option></select></div><div class="field"><label for="busDirection">Fahrtrichtung der Animation</label><select id="busDirection"><option value="">Bitte auswählen</option><option value="links_rechts">Links nach rechts</option><option value="rechts_links">Rechts nach links</option></select></div></div><hr class="separator"><label class="checkline"><input id="updateOptions" type="checkbox"> Diese Anzeigeoptionen auch auf ausgewählte bestehende Apps anwenden</label><p class="kbdnote">Ohne diese Auswahl bleiben die individuellen Einstellungen vorhandener Apps bei einem Skriptupdate erhalten.</p><p class="dark-note">Es gibt keine künstliche Vorschau. Der Assistent zeigt nur reale API-Prüfergebnisse an. Die grafischen Beispielbilder im Paket sind keine Live-Displayausgabe.</p></div></section>
+<section class="section" id="page3" aria-labelledby="head3"><div class="panel"><div class="panel-head"><div><h2 id="head3">Änderungen je Uhr prüfen</h2><p class="muted tiny">Nur die hier aufgeführten Aktionen werden ausgeführt. Keine vorhandene Haltestelle wird stillschweigend gelöscht oder aktualisiert.</p></div></div><div id="reviewCards" class="stack"></div><div id="deleteConfirm" class="danger-confirm" hidden><label for="deletePhrase">Löschen ausdrücklich bestätigen: <strong>LÖSCHEN</strong> eingeben</label><input id="deletePhrase" autocomplete="off" placeholder="LÖSCHEN"></div><div class="row" style="margin-top:16px"><button class="primary" id="install" disabled>Ausgewählte Änderungen ausführen</button><button id="abortInstall" class="danger" hidden>Weitere Übertragungen stoppen</button><button class="ghost" id="exportApps">Konfigurierte Apps herunterladen</button></div><p id="installStatus" class="statusline" style="margin-top:12px" role="status">Keine Installation gestartet.</p></div></section>
+<div class="footer"><button id="back" class="ghost" disabled>Zurück</button><span class="footer-note" id="footerHint">Schritt 1 von 4 · Uhren erkennen</span><div class="row"><button id="next" class="primary">Weiter zu Haltestellen</button></div></div><footer class="footline"><span>TransitNext · Native AWTRIX-NG-Skripte · ohne Home Assistant</span><span>Internetdaten: Transitous · Lokale Installation: AWTRIX NG</span><a class="coffee-link" href="https://buymeacoffee.com/q14six" target="_blank" rel="noopener noreferrer" aria-label="Buy me a coffee – TransitNext unterstützen"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" width="217" height="60" alt="Buy me a coffee" loading="lazy"></a></footer>
+</main><script id="berryTC001" type="text/plain"># @name TransitNext
+# @desc Naechste OEPNV-Abfahrt
+# @author Q14siX
+# @version 20261113.233708
+# @display 32x8
+# @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
+# @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=256 group="Haltestelle"
+# @config stop_name text "Haltestelle" default="__STOP_NAME__" maxlen=90 group="Haltestelle"
+# @config stop_label text "Haltepunkt" default="__STOP_LABEL__" maxlen=150 group="Haltestelle"
+# @config refresh number "Abrufintervall (Minuten)" default=__REFRESH__ min=1 max=30 step=1 group="Fahrplan"
+# @config search_hours number "Suchzeitraum (Stunden)" default=__HOURS__ min=1 max=72 step=1 group="Fahrplan"
+# @config mode select "Abfahrtsanzeige" default=__MODE__ options=countdown,time,time_delay group="Darstellung"
+# @config auto_line_colors bool "Linienfarben automatisch" default=true group="Darstellung"
+# @config line_color color "Linienfarbe" default=#8737CE group="Darstellung"
+# @config show_delay bool "Verspaetung anzeigen" default=true group="Darstellung"
+# @config hide_empty bool "Ohne Abfahrt ausblenden" default=__HIDE_EMPTY__ group="Darstellung"
+# @config zero_mode select "Bei 0 Minuten" default=__ZERO_MODE__ options=normal,bus group="Darstellung"
+# @config bus_direction select "Bus-Fahrtrichtung" default=__BUS_DIRECTION__ options=links_rechts,rechts_links group="Darstellung"
+# @config line_relief select "Liniennummer 3D-Stufe" default=__LINE_RELIEF__ options=1,2,3 help="1 Dezent, 2 Mittel, 3 Kraeftig" group="Darstellung"
+import json
+import string
+class TransitNext
+  var time_start
+  var stop_id, stop_ids, stop_name, short_stop, api_url, ticks, waiting, status
+  var selected, line_pixels, line_fallback, line_big, auto_color
+  var next_request, attempt_n, retry_stage, scan_after, scan_pages
+  var scroll_top, scroll_bottom, empty_confirmed, bus_start, bus_done
+  var last_ok, last_poll
+  def init()
+   self.time_start = 0
+   self.stop_id = ""
+   self.stop_ids = ""
+   self.stop_name = ""
+   self.short_stop = ""
+   self.api_url = ""
+   self.bus_done = false
+   self.empty_confirmed = false
+   self.last_ok = -1000000
+   self.last_poll = -1000000
+   self.bus_start = -1
+   self.ticks = 0
+   self.waiting = false
+   self.status = "Lade..."
+   self.selected = nil
+   self.line_pixels = []
+   self.line_fallback = "OEPNV"
+   self.line_big = false
+   self.auto_color = 0x8737CE
+   self.attempt_n = 2
+   self.retry_stage = 0
+   self.next_request = 0
+   self.scan_after = 0
+   self.scan_pages = 0
+   self.scroll_top = {"mode":"loop", "whenFits":"static", "speed":75, "gap":7}
+   self.scroll_bottom = {"mode":"loop", "whenFits":"static", "speed":65, "gap":8, "repeat":1}
+   self.prepare_line("-")
+  end
+  def setup()
+   self.stop_id = str(store.get("stop_id", ""))
+   self.stop_ids = str(store.get("stop_ids", self.stop_id))
+   self.stop_name = str(store.get("stop_name", ""))
+   self.short_stop = self.stop_name
+   var comma = string.find(self.short_stop, ", ")
+   if comma >= 0 && comma + 2 < size(self.short_stop)
+    self.short_stop = self.short_stop[comma + 2..-1]
+   end
+   self.api_url = "https://api.transitous.org/api/v6/stoptimes?stopId=" + self.stop_id + "&arriveBy=false&fetchStops=false&radius=25&exactRadius=true&n="
+  end
+  def iso_second(v)
+   if type(v) != "string" || size(v) < 20 return nil end
+   if v[4] != "-" || v[7] != "-" || v[10] != "T" || v[13] != ":" || v[16] != ":" return nil end
+   for i : [0,1,2,3,5,6,8,9,11,12,14,15,17,18]
+    if string.find("0123456789", v[i..i]) < 0 return nil end
+   end
+   var y = num(v[0..3])
+   var m = num(v[5..6])
+   var d = num(v[8..9])
+   var hh = num(v[11..12])
+   var mm = num(v[14..15])
+   var ss = num(v[17..18])
+   if y < 1970 || m < 1 || m > 12 || hh > 23 || mm > 59 || ss > 59 return nil end
+   var days = [31,28,31,30,31,30,31,31,30,31,30,31]
+   if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) days[1] = 29 end
+   if d < 1 || d > days[m - 1] return nil end
+   var off = 0
+   var tail = size(v) - 1
+   if v[-1] != "Z"
+    if size(v) < 25 || v[-3] != ":" return nil end
+    var sign = v[-6]
+    if sign != "+" && sign != "-" return nil end
+    for i : [size(v)-5,size(v)-4,size(v)-2,size(v)-1]
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+    var oh = num(v[-5..-4])
+    var om = num(v[-2..-1])
+    if oh > 23 || om > 59 return nil end
+    off = (oh * 60 + om) * 60
+    if sign == "-" off = -off end
+    tail = size(v) - 6
+   end
+   if tail > 19
+    if v[19] != "." || tail == 20 return nil end
+    for i : 20 .. tail - 1
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+   end
+   if m <= 2 y -= 1 end
+   var era = int(y / 400)
+   var yoe = y - era * 400
+   var adj = m > 2 ? m - 3 : m + 9
+   var doy = int((153 * adj + 2) / 5) + d - 1
+   var doe = yoe * 365 + int(yoe / 4) - int(yoe / 100) + doy
+   return ((era * 146097 + doe - 719468) * 1440 + hh * 60 + mm) * 60 + ss - off
+  end
+  def local_time(timestamp)
+   var utc = epoch_ms() / 60000
+   var shift = (hour() * 60 + minute() - (utc % 1440) + 1440) % 1440
+   if shift > 720 shift -= 1440 end
+   var local = (int(timestamp / 60) + shift + 1440) % 1440
+   return format("%02d:%02d", int(local / 60), int(local % 60))
+  end
+  def utc_iso(value)
+   var secs = value % 60
+   value = int(value / 60)
+   var days = int(value / 1440)
+   var mins = value % 1440
+   if mins < 0
+    mins += 1440
+    days -= 1
+   end
+   var z = days + 719468
+   var era = int((z >= 0 ? z : z - 146096) / 146097)
+   var doe = z - era * 146097
+   var yoe = int((doe - int(doe / 1460) + int(doe / 36524) - int(doe / 146096)) / 365)
+   var yy = yoe + era * 400
+   var doy = doe - (365 * yoe + int(yoe / 4) - int(yoe / 100))
+   var mp = int((5 * doy + 2) / 153)
+   var dd = doy - int((153 * mp + 2) / 5) + 1
+   var mm = mp + (mp < 10 ? 3 : -9)
+   if mm <= 2 yy += 1 end
+   return format("%04d-%02d-%02dT%02d:%02d:%02dZ", yy, mm, dd, int(mins / 60), int(mins % 60), secs)
+  end
+  def stop_matches(place)
+   if !isinstance(place, map) return false end
+   var actual = place.find("stopId")
+   if type(actual) != "string" return false end
+   # Only explicitly selected boarding-position IDs are permitted.
+   return string.find("|" + self.stop_ids + "|", "|" + actual + "|") >= 0
+  end
+  def build(event)
+   if !isinstance(event, map) return nil end
+   if event.find("cancelled", false) || event.find("tripCancelled", false) return nil end
+   if event.find("pickupDropoffType") == "NOT_ALLOWED" return nil end
+   var place = event.find("place")
+   if !self.stop_matches(place) return nil end
+   if place.find("cancelled", false) || place.find("pickupType") == "NOT_ALLOWED" return nil end
+   var predicted = self.iso_second(place.find("departure"))
+   var epoch = predicted
+   if epoch == nil epoch = self.iso_second(place.find("scheduledDeparture")) end
+   if epoch == nil return nil end
+   var now = int(epoch_ms() / 1000)
+   if epoch < now - 30 return nil end
+   var horizon = clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+   if epoch > now + horizon return nil end
+   var direction = event.find("headsign")
+   if type(direction) != "string" || direction == ""
+    var terminal = event.find("tripTo")
+    if isinstance(terminal, map) direction = terminal.find("name") end
+   end
+   if type(direction) != "string" || direction == "" direction = "Richtung unbekannt" end
+   var line = event.find("routeShortName", event.find("displayName", ""))
+   if line == nil || str(line) == ""
+    var kind = event.find("mode", "OEPNV")
+    line = kind == "BUS" ? "BUS" : kind == "TRAM" ? "TRAM" : "ZUG"
+   end
+   var scheduled = self.iso_second(place.find("scheduledDeparture"))
+   var delta = scheduled == nil ? 0 : epoch - scheduled
+   var delay = delta < 0 ? -int((-delta + 30) / 60) : int((delta + 30) / 60)
+   return {
+    "epoch": epoch,
+    "scheduled": scheduled,
+    "line": str(line),
+    "mode": str(event.find("mode", "TRANSIT")),
+    "direction": direction,
+    "delay": delay,
+    "realtime": predicted != nil && event.find("realTime", false)
+   }
+  end
+  def color_line(value)
+   var digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   var n = 0
+   var v = string.toupper(value)
+   for i : 0 .. size(v) - 1
+    var x = string.find(digits, v[i..i])
+    if x >= 0 n = (n * 37 + x + 1) % 360 end
+   end
+   return hsv((n * 137 + 280) % 360, 83, 59)
+  end
+  def prepare_line(value)
+   self.line_fallback = value
+   self.auto_color = self.color_line(value)
+  end
+  def request()
+   if self.waiting return end
+   if epoch_ms() < 1000000000000
+    self.empty_confirmed = false
+    self.status = "Warte auf Uhrzeit"
+    self.ticks = 20
+    return
+   end
+   if self.stop_id == ""
+    self.status = "Haltestelle waehlen"
+    self.ticks = 300
+    return
+   end
+   self.waiting = true
+   self.last_poll = now_ms()
+   self.next_request = 0
+   if self.selected == nil self.status = "Lade..." end
+   self.ticks = clamp(num(store.get("refresh"), 5), 1, 30) * 60
+   var url = self.api_url + str(self.attempt_n)
+   if self.scan_after > 0 url += "&time=" + self.utc_iso(self.scan_after) end
+   http.get(url, / body, code -> self.on_reply(body, code),
+    {"find":"\"stopTimes\":", "keep":6000, "cap":8192,
+     "headers":{"Accept":"application/json", "User-Agent":"TransitNext-AWTRIX"}})
+  end
+  def parse_events(body)
+   var pos = string.find(body, "[")
+   if pos < 0 return nil end
+   var result = []
+   var cursor = pos + 1
+   while cursor < size(body)
+    var ch = body[cursor..cursor]
+    if ch == " " || ch == "\n" || ch == "\t" || ch == "\r" || ch == ","
+     cursor += 1
+     continue
+    end
+    if ch == "]" return {"events":result, "complete":true} end
+    if ch != "{" return nil end
+    var start = cursor
+    var depth = 0
+    var quoted = false
+    var escaped = false
+    while cursor < size(body)
+     ch = body[cursor..cursor]
+     if quoted
+      if escaped
+       escaped = false
+      elif ch == "\\"
+       escaped = true
+      elif ch == "\""
+       quoted = false
+      end
+     elif ch == "\""
+      quoted = true
+     elif ch == "{"
+      depth += 1
+     elif ch == "}"
+      depth -= 1
+      if depth == 0
+       var item = json.load(body[start..cursor])
+       if !isinstance(item, map) return nil end
+       result.push(item)
+       cursor += 1
+       break
+      end
+     end
+     cursor += 1
+    end
+    if depth != 0 return {"events":result, "complete":false} end
+   end
+   return {"events":result, "complete":false}
+  end
+  def on_reply(body, code)
+   self.waiting = false
+   if code != 200
+    self.empty_confirmed = false
+    self.status = code == 0 ? "Netz/Timeout" : "HTTP " + str(code)
+    self.ticks = 120
+    return
+   end
+   if body == nil
+    self.retry("Antwort zu gross")
+    return
+   end
+   try
+    var parsed = self.parse_events(body)
+    if !isinstance(parsed, map)
+     self.retry("API-Format")
+     return
+    end
+    var best = nil
+    var now = int(epoch_ms() / 1000)
+    for item : parsed["events"]
+     var ev = self.build(item)
+     if ev != nil && (best == nil || ev["epoch"] < best["epoch"])
+      best = ev
+     end
+    end
+    if best != nil
+     self.empty_confirmed = false
+     self.bus_start = -1
+     self.bus_done = false
+     self.last_ok = now_ms()
+     self.selected = best
+     self.prepare_line(best["line"])
+     self.status = "OK"
+     self.retry_stage = 0
+     self.attempt_n = 2
+     self.scan_after = 0
+     self.scan_pages = 0
+     return
+    end
+    if !parsed["complete"]
+     self.retry("Antwort unvollstaendig")
+     return
+    end
+    # A page with only cancelled or unrelated stops is not an empty timetable.
+    if size(parsed["events"]) > 0
+     var last = 0
+     for item : parsed["events"]
+      var place = item.find("place")
+      if isinstance(place, map)
+       var stamp = self.iso_second(place.find("departure", place.find("scheduledDeparture")))
+       if stamp != nil && stamp > last last = stamp end
+      end
+     end
+     var horizon = now + clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+     if last > now && last < horizon && self.scan_pages < 10
+      self.scan_after = last + 1
+      self.scan_pages += 1
+      self.retry_stage = 0
+      self.attempt_n = 2
+      self.next_request = now_ms() + 3500
+      self.status = "Suche weitere Abfahrten"
+      return
+     end
+     if self.scan_pages >= 10 || last <= now
+      self.empty_confirmed = false
+      self.status = "Noch keine passende Abfahrt"
+      self.ticks = 120
+      return
+     end
+    end
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = true
+    self.status = "Keine Abfahrt in " + str(store.get("search_hours", 24)) + "h"
+    self.retry_stage = 0
+    self.attempt_n = 2
+    self.scan_after = 0
+    self.scan_pages = 0
+   except .. as err, message
+    self.retry("Antwort unlesbar")
+    log("TransitNext: " + str(message))
+   end
+  end
+  def retry(reason)
+   self.empty_confirmed = false
+   if self.retry_stage == 0
+    self.retry_stage = 1
+    self.attempt_n = 2
+    self.next_request = now_ms() + 7000
+    self.status = "Abfrage verkleinert"
+   elif self.retry_stage == 1
+    self.retry_stage = 2
+    self.attempt_n = 1
+    self.next_request = now_ms() + 7000
+    self.status = "Pruefe Einzelabfahrt"
+   else
+    self.status = reason
+    self.next_request = 0
+    self.ticks = 120
+    log("TransitNext: " + reason)
+   end
+  end
+  def loop()
+   if self.selected != nil && self.remaining() <= 300000 && now_ms() - self.last_poll >= 60000 && !self.waiting && self.next_request == 0
+    self.ticks = 0
+   end
+   if self.selected != nil && self.remaining() < -30000
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = false
+    self.bus_start = -1
+    self.status = "Suche naechste..."
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+   end
+   if !self.waiting && self.next_request > 0 && now_ms() >= self.next_request
+    self.next_request = 0
+    self.request()
+   elif !self.waiting && self.next_request == 0 && self.ticks <= 0
+    self.retry_stage = 0
+    self.attempt_n = 2
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.request()
+   end
+   self.ticks -= 1
+  end
+  def on_button(btn)
+   if btn == "select"
+    self.next_request = 0
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.attempt_n = 2
+    if !self.waiting self.request() end
+    return true
+   end
+   return false
+  end
+  def should_show()
+   return !(store.get("hide_empty", true) && self.empty_confirmed && self.selected == nil)
+  end
+  def on_show()
+   self.time_start = now_ms()
+   self.bus_start = -1
+   self.bus_done = false
+  end
+  def shade(c, amount)
+   var r = (c >> 16) & 255
+   var g = (c >> 8) & 255
+   var b = c & 255
+   var target = amount > 0 ? 255 : 0
+   var mix = amount > 0 ? amount : -amount
+   return rgb(r + int((target - r) * mix / 100), g + int((target - g) * mix / 100), b + int((target - b) * mix / 100))
+  end
+  def draw_badge(c, w, h)
+   var level = int(clamp(num(store.get("line_relief", 2), 2), 1, 3))
+   rect_fill(0, 0, w, h, c)
+   if level > 1
+    for y : 1 .. h - 2
+     var tint = int((level - 1) * 14 * (h - 1 - 2 * y) / (h - 1))
+     rect_fill(1, y, w - 2, 1, self.shade(c, tint))
+    end
+   end
+   var light = self.shade(c, 15 + 12 * level)
+   var dark = self.shade(c, -18 - 12 * level)
+   line(0, 0, w - 2, 0, light)
+   line(0, 1, 0, h - 2, light)
+   line(0, h - 1, w - 1, h - 1, dark)
+   line(w - 1, 0, w - 1, h - 2, dark)
+  end
+  def remaining()
+   var now = epoch_ms()
+   return (self.selected["epoch"] - int(now / 1000)) * 1000 - int(now % 1000)
+  end
+  def fresh()
+   return self.status == "OK" && now_ms() - self.last_ok <= 120000
+  end
+  def centered_time(left, baseline, span)
+   var pieces = self.time_segments()
+   var total = ""
+   for piece : pieces
+    total += piece[0]
+   end
+   total = text_ink_width(total)
+   if total > span
+    scroll_text(left, baseline, span, pieces, store.get("time_color", 0xFFC247), self.scroll_top)
+    return
+   end
+   var x = left + int((span - total) / 2)
+   for piece : pieces
+    text(x, baseline, piece[0], piece[1])
+    x += text_width(piece[0])
+   end
+  end
+  def time_label()
+   var mode = store.get("mode", "time_delay")
+   if mode == "countdown"
+    return str(max(0, int(self.remaining() / 60000))) + "min"
+   end
+   if mode == "time_delay" && self.selected["scheduled"] != nil
+    return self.local_time(self.selected["scheduled"])
+   end
+   return self.local_time(self.selected["epoch"])
+  end
+  def time_segments()
+   var main = self.time_label()
+   var color = store.get("time_color", 0xFFC247)
+   var pieces = [[main, color]]
+   if store.get("mode", "time_delay") == "time_delay" && store.get("show_delay", true) && self.selected["realtime"] && self.selected["scheduled"] != nil
+    var delay = self.selected["delay"]
+    var suffix = delay >= 0 ? "+" + str(delay) : str(delay)
+    var tint = delay > 0 ? 0xFF3030 : delay == 0 ? 0xFFD000 : 0x39DB7B
+    pieces.push([" " + suffix, tint])
+   end
+   return pieces
+  end
+  def bus_due()
+   if self.selected == nil || !self.fresh() return false end
+   var mode = self.selected["mode"]
+   return store.get("zero_mode", "bus") == "bus" && (mode == "BUS" || mode == "COACH") && self.remaining() < 60000 && self.remaining() >= -30000
+  end
+  def duration()
+   if self.bus_due() return 15000 end
+   return 12000
+  end
+  def draw_bus(left)
+   if self.bus_start < 0 self.bus_start = now_ms() end
+   var t = now_ms() - self.bus_start
+   if t >= 6200 return true end
+   var span = width() - left
+   var bw = span - 2
+   var bh = min(height(), 14)
+   var top = int((height() - bh) / 2)
+   var mid = int((span - bw) / 2)
+   var x = mid
+   if t < 2000
+    x = -bw + int((mid + bw) * t * (4000 - t) / 4000000)
+   elif t >= 4200
+    var dt = t - 4200
+    x = mid + int((span - mid) * dt * dt / 4000000)
+   end
+   var reverse = store.get("bus_direction", "links_rechts") == "rechts_links"
+   var door = 0
+   if !reverse && t >= 2300 && t < 3900
+    if t < 2700
+     door = min(2, int((t - 2300) / 200) + 1)
+    elif t < 3500
+     door = 2
+    else
+     door = max(0, 2 - int((t - 3500) / 200))
+    end
+   end
+   var window_end = bh - 5
+   var dx = bw - 6
+   var dw = 4
+   var fw = bw - 11
+   if bh == 8
+    dx = bw - 4
+    dw = 3
+    fw = bw - 8
+   end
+   for y : 0 .. bh - 1
+    for col : 0 .. bw - 1
+     var c = -1
+     if y == 0 && col >= 2 && col < bw - 3 c = 0xFFF0B0 end
+     if y >= 1 && y < bh - 2
+      if (col > 0 && col < bw - 1) || y >= 3
+       c = 0xF5B62B
+       if y >= bh - 4 c = 0xCB7417 end
+       if y >= 2 && y <= window_end && col >= 2 && col < bw - 2
+        c = 0x89D6F2
+        if col % 6 == 1 c = 0x254453 end
+       end
+       if col == bw - 1 && y >= 3 && y <= window_end c = 0xC1EAF7 end
+       if y == bh - 4 && col == bw - 1 c = 0xFFF9CD end
+       if y == bh - 4 && col == 0 c = 0xF04430 end
+       if !reverse && col >= dx && col < dx + dw && y >= 2 && y < bh - 2
+        c = 0x31434A
+        if y <= window_end c = 0x9BDEEC end
+        if col == dx + 1 || col == dx + 2 c = 0x536168 end
+        if door > 0 && col >= dx + 2 - door && col < dx + 2 + door
+         c = 0x10181E
+         if y == bh - 3 c = 0xBCC5C7 end
+        end
+       end
+      end
+     end
+     if y >= bh - 3 && ((col >= 3 && col <= 6) || (col >= fw - 1 && col <= fw + 2))
+      c = 0x1B252E
+      if y == bh - 2 && (col == 4 || col == fw) c = 0xB5C2CB end
+     end
+     var px = left + x + col
+     if reverse px = left + span - 1 - x - col end
+     if c >= 0 && px >= left && px < width() pixel(px, top + y, c) end
+    end
+   end
+   return false
+  end
+  def draw()
+   clear()
+   font("small")
+   if width() < 32 || height() != 8
+    scroll_text("TransitNext: 32x8", 0xFFC247)
+    return
+   end
+   var c = store.get("line_color", 0x8737CE)
+   if store.get("auto_line_colors", true) c = self.auto_color end
+   var badge = int(clamp(text_ink_width(self.line_fallback) + 2, 7, 13))
+   self.draw_badge(c, badge, 8)
+   if text_ink_width(self.line_fallback) <= badge - 2
+    text(1, 6, self.line_fallback, 0xFFFFFF)
+   else
+    scroll_text(1, 6, badge - 2, self.line_fallback, 0xFFFFFF, self.scroll_top)
+   end
+   var left = badge + 1
+   var label = self.status
+   var route = self.short_stop
+   if self.selected != nil
+    label = self.time_label()
+    route += " > " + self.selected["direction"]
+    if self.bus_due() && !self.bus_done
+     self.bus_done = self.draw_bus(left)
+     if !self.bus_done return end
+    end
+   end
+   var elapsed = now_ms() - self.time_start
+   if self.bus_due() elapsed -= 6200 end
+   var hold = 3000
+   if self.selected != nil
+    var runs = self.time_segments()
+    var ink = 0
+    for run : runs
+     ink += text_width(run[0])
+    end
+    if ink > width() - left hold = max(hold, (ink + 7) * 75 + 1000) end
+   end
+   if self.selected == nil
+    scroll_text(left, 6, width() - left, [[label, 0xFFC247], ["  " + route, 0xFFFFFF]], 0xFFFFFF, self.scroll_bottom)
+   elif elapsed < hold
+    self.centered_time(left, 6, width() - left)
+   else
+    scroll_text(left, 6, width() - left, route, store.get("text_color", 0xFFFFFF), self.scroll_bottom)
+   end
+  end
+end
+return TransitNext()
+</script><script id="berryTC002" type="text/plain"># @name TransitNext
+# @desc Naechste OEPNV-Abfahrt
+# @author Q14siX
+# @version 20261113.233708
+# @display 52x16
+# @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
+# @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=384 group="Haltestelle"
+# @config stop_name text "Haltestelle" default="__STOP_NAME__" maxlen=90 group="Haltestelle"
+# @config stop_label text "Haltepunkt" default="__STOP_LABEL__" maxlen=150 group="Haltestelle"
+# @config refresh number "Abrufintervall (Minuten)" default=__REFRESH__ min=1 max=30 step=1 group="Fahrplan"
+# @config search_hours number "Suchzeitraum (Stunden)" default=__HOURS__ min=1 max=72 step=1 group="Fahrplan"
+# @config mode select "Abfahrtsanzeige" default=__MODE__ options=countdown,time,time_delay group="Darstellung"
+# @config auto_line_colors bool "Linienfarben automatisch" default=true group="Darstellung"
+# @config line_color color "Linienfarbe" default=#8737CE group="Darstellung"
+# @config time_color color "Zeitfarbe" default=#FFC247 group="Darstellung"
+# @config text_color color "Laufschriftfarbe" default=#FFFFFF group="Darstellung"
+# @config show_delay bool "Verspaetung anzeigen" default=true group="Darstellung"
+# @config hide_empty bool "Ohne Abfahrt ausblenden" default=__HIDE_EMPTY__ group="Darstellung"
+# @config zero_mode select "Bei 0 Minuten" default=__ZERO_MODE__ options=normal,bus group="Darstellung"
+# @config bus_direction select "Bus-Fahrtrichtung" default=__BUS_DIRECTION__ options=links_rechts,rechts_links group="Darstellung"
+# @config line_relief select "Liniennummer 3D-Stufe" default=__LINE_RELIEF__ options=1,2,3 help="1 Dezent, 2 Mittel, 3 Kraeftig" group="Darstellung"
+import json
+import string
+class TransitNext
+  var stop_id, stop_ids, stop_name, short_stop, api_url, ticks, waiting, status
+  var selected, line_pixels, line_fallback, line_big, auto_color
+  var next_request, attempt_n, retry_stage, scan_after, scan_pages
+  var scroll_top, scroll_bottom, empty_confirmed, bus_start, bus_done
+  var last_ok, last_poll
+  def init()
+   self.stop_id = str(store.get("stop_id", ""))
+   self.stop_ids = str(store.get("stop_ids", self.stop_id))
+   self.stop_name = str(store.get("stop_name", ""))
+   self.short_stop = self.stop_name
+   var comma = string.find(self.short_stop, ", ")
+   if comma >= 0 && comma + 2 < size(self.short_stop)
+    self.short_stop = self.short_stop[comma + 2..-1]
+   end
+   self.api_url = "https://api.transitous.org/api/v6/stoptimes?stopId=" + self.stop_id + "&arriveBy=false&fetchStops=false&radius=25&exactRadius=true&n="
+   self.empty_confirmed = false
+   self.last_ok = -1000000
+   self.last_poll = -1000000
+   self.bus_start = -1
+   self.bus_done = false
+   self.ticks = 0
+   self.waiting = false
+   self.status = "Lade..."
+   self.selected = nil
+   self.line_pixels = []
+   self.line_fallback = "OEPNV"
+   self.line_big = false
+   self.auto_color = 0x8737CE
+   self.attempt_n = 6
+   self.retry_stage = 0
+   self.next_request = 0
+   self.scan_after = 0
+   self.scan_pages = 0
+   self.scroll_top = {"mode":"loop", "whenFits":"static", "speed":75, "gap":7}
+   self.scroll_bottom = {"mode":"loop", "whenFits":"static", "speed":65, "gap":8, "repeat":1}
+   self.prepare_line("-")
+  end
+  def iso_second(v)
+   if type(v) != "string" || size(v) < 20 return nil end
+   if v[4] != "-" || v[7] != "-" || v[10] != "T" || v[13] != ":" || v[16] != ":" return nil end
+   for i : [0,1,2,3,5,6,8,9,11,12,14,15,17,18]
+    if string.find("0123456789", v[i..i]) < 0 return nil end
+   end
+   var y = num(v[0..3])
+   var m = num(v[5..6])
+   var d = num(v[8..9])
+   var hh = num(v[11..12])
+   var mm = num(v[14..15])
+   var ss = num(v[17..18])
+   if y < 1970 || m < 1 || m > 12 || hh > 23 || mm > 59 || ss > 59 return nil end
+   var days = [31,28,31,30,31,30,31,31,30,31,30,31]
+   if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) days[1] = 29 end
+   if d < 1 || d > days[m - 1] return nil end
+   var off = 0
+   var tail = size(v) - 1
+   if v[-1] != "Z"
+    if size(v) < 25 || v[-3] != ":" return nil end
+    var sign = v[-6]
+    if sign != "+" && sign != "-" return nil end
+    for i : [size(v)-5,size(v)-4,size(v)-2,size(v)-1]
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+    var oh = num(v[-5..-4])
+    var om = num(v[-2..-1])
+    if oh > 23 || om > 59 return nil end
+    off = (oh * 60 + om) * 60
+    if sign == "-" off = -off end
+    tail = size(v) - 6
+   end
+   if tail > 19
+    if v[19] != "." || tail == 20 return nil end
+    for i : 20 .. tail - 1
+     if string.find("0123456789", v[i..i]) < 0 return nil end
+    end
+   end
+   if m <= 2 y -= 1 end
+   var era = int(y / 400)
+   var yoe = y - era * 400
+   var adj = m > 2 ? m - 3 : m + 9
+   var doy = int((153 * adj + 2) / 5) + d - 1
+   var doe = yoe * 365 + int(yoe / 4) - int(yoe / 100) + doy
+   return ((era * 146097 + doe - 719468) * 1440 + hh * 60 + mm) * 60 + ss - off
+  end
+  def local_time(timestamp)
+   var utc = epoch_ms() / 60000
+   var shift = (hour() * 60 + minute() - (utc % 1440) + 1440) % 1440
+   if shift > 720 shift -= 1440 end
+   var local = (int(timestamp / 60) + shift + 1440) % 1440
+   return format("%02d:%02d", int(local / 60), int(local % 60))
+  end
+  def utc_iso(value)
+   var secs = value % 60
+   value = int(value / 60)
+   var days = int(value / 1440)
+   var mins = value % 1440
+   if mins < 0
+    mins += 1440
+    days -= 1
+   end
+   var z = days + 719468
+   var era = int((z >= 0 ? z : z - 146096) / 146097)
+   var doe = z - era * 146097
+   var yoe = int((doe - int(doe / 1460) + int(doe / 36524) - int(doe / 146096)) / 365)
+   var yy = yoe + era * 400
+   var doy = doe - (365 * yoe + int(yoe / 4) - int(yoe / 100))
+   var mp = int((5 * doy + 2) / 153)
+   var dd = doy - int((153 * mp + 2) / 5) + 1
+   var mm = mp + (mp < 10 ? 3 : -9)
+   if mm <= 2 yy += 1 end
+   return format("%04d-%02d-%02dT%02d:%02d:%02dZ", yy, mm, dd, int(mins / 60), int(mins % 60), secs)
+  end
+  def stop_matches(place)
+   if !isinstance(place, map) return false end
+   var actual = place.find("stopId")
+   if type(actual) != "string" return false end
+   # Only explicitly selected boarding-position IDs are permitted.
+   return string.find("|" + self.stop_ids + "|", "|" + actual + "|") >= 0
+  end
+  def build(event)
+   if !isinstance(event, map) return nil end
+   if event.find("cancelled", false) || event.find("tripCancelled", false) return nil end
+   if event.find("pickupDropoffType") == "NOT_ALLOWED" return nil end
+   var place = event.find("place")
+   if !self.stop_matches(place) return nil end
+   if place.find("cancelled", false) || place.find("pickupType") == "NOT_ALLOWED" return nil end
+   var predicted = self.iso_second(place.find("departure"))
+   var epoch = predicted
+   if epoch == nil epoch = self.iso_second(place.find("scheduledDeparture")) end
+   if epoch == nil return nil end
+   var now = int(epoch_ms() / 1000)
+   if epoch < now - 30 return nil end
+   var horizon = clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+   if epoch > now + horizon return nil end
+   var direction = event.find("headsign")
+   if type(direction) != "string" || direction == ""
+    var terminal = event.find("tripTo")
+    if isinstance(terminal, map) direction = terminal.find("name") end
+   end
+   if type(direction) != "string" || direction == "" direction = "Richtung unbekannt" end
+   var line = event.find("routeShortName", event.find("displayName", ""))
+   if line == nil || str(line) == ""
+    var kind = event.find("mode", "OEPNV")
+    line = kind == "BUS" ? "BUS" : kind == "TRAM" ? "TRAM" : "ZUG"
+   end
+   var scheduled = self.iso_second(place.find("scheduledDeparture"))
+   var delta = scheduled == nil ? 0 : epoch - scheduled
+   var delay = delta < 0 ? -int((-delta + 30) / 60) : int((delta + 30) / 60)
+   return {
+    "epoch": epoch,
+    "scheduled": scheduled,
+    "line": str(line),
+    "mode": str(event.find("mode", "TRANSIT")),
+    "direction": direction,
+    "delay": delay,
+    "realtime": predicted != nil && event.find("realTime", false)
+   }
+  end
+  def color_line(value)
+   var digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   var n = 0
+   var v = string.toupper(value)
+   for i : 0 .. size(v) - 1
+    var x = string.find(digits, v[i..i])
+    if x >= 0 n = (n * 37 + x + 1) % 360 end
+   end
+   return hsv((n * 137 + 280) % 360, 83, 59)
+  end
+  def prepare_line(value)
+   self.line_pixels = []
+   self.line_fallback = value
+   self.line_big = false
+   self.auto_color = self.color_line(value)
+   var digits = "0123456789"
+   var count = size(value)
+   if count < 1 || count > 3 return end
+   for i : 0 .. count - 1
+    if string.find(digits, value[i..i]) < 0 return end
+   end
+   var glyphs7 = [
+    "01110100011001110101110011000101110",
+    "00100011000010000100001000010001110",
+    "11110000010000101110100001000011111",
+    "11110000010000101110000010000111110",
+    "10010100101001011111000100001000010",
+    "11111100001000011110000010000111110",
+    "01110100001000011110100011000101110",
+    "11111000010001000100010000100001000",
+    "01110100011000101110100011000101110",
+    "01110100011000101111000010000101110"
+   ]
+   var glyphs5 = [
+    "111101101101111", "010110010010111", "110001111100111",
+    "110001111001110", "101101111001001", "111100111001110",
+    "011100111101111", "111001010010010", "111101111101111",
+    "111101111001110"
+   ]
+   var cols = count == 1 ? 5 : 3
+   var rows = count == 1 ? 7 : 5
+   var advance = count == 3 ? 1 : 2
+   var pix = count == 3 ? 1 : 2
+   var gap = count == 1 ? 0 : count == 2 ? 2 : 1
+   var gwidth = (cols - 1) * advance + pix
+   var total = count * gwidth + (count - 1) * gap
+   var left = int((17 - total) / 2)
+   var top = int((16 - rows * 2) / 2)
+   for i : 0 .. count - 1
+    var glyph = count == 1 ? glyphs7[string.find(digits, value[i..i])] : glyphs5[string.find(digits, value[i..i])]
+    for y : 0 .. rows - 1
+     for x : 0 .. cols - 1
+      if glyph[y * cols + x..y * cols + x] == "1"
+       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, top + y * 2, pix])
+      end
+     end
+    end
+   end
+   self.line_big = true
+  end
+  def request()
+   if self.waiting return end
+   if epoch_ms() < 1000000000000
+    self.empty_confirmed = false
+    self.status = "Warte auf Uhrzeit"
+    self.ticks = 20
+    return
+   end
+   if self.stop_id == ""
+    self.status = "Haltestelle waehlen"
+    self.ticks = 300
+    return
+   end
+   self.waiting = true
+   self.last_poll = now_ms()
+   self.next_request = 0
+   if self.selected == nil self.status = "Lade..." end
+   self.ticks = clamp(num(store.get("refresh"), 5), 1, 30) * 60
+   var url = self.api_url + str(self.attempt_n)
+   if self.scan_after > 0 url += "&time=" + self.utc_iso(self.scan_after) end
+   http.get(url, / body, code -> self.on_reply(body, code),
+    {"find":"\"stopTimes\":", "keep":8000, "cap":8192,
+     "headers":{"Accept":"application/json", "User-Agent":"TransitNext-AWTRIX"}})
+  end
+  def parse_events(body)
+   var pos = string.find(body, "[")
+   if pos < 0 return nil end
+   var result = []
+   var cursor = pos + 1
+   while cursor < size(body)
+    var ch = body[cursor..cursor]
+    if ch == " " || ch == "\n" || ch == "\t" || ch == "\r" || ch == ","
+     cursor += 1
+     continue
+    end
+    if ch == "]" return {"events":result, "complete":true} end
+    if ch != "{" return nil end
+    var start = cursor
+    var depth = 0
+    var quoted = false
+    var escaped = false
+    while cursor < size(body)
+     ch = body[cursor..cursor]
+     if quoted
+      if escaped
+       escaped = false
+      elif ch == "\\"
+       escaped = true
+      elif ch == "\""
+       quoted = false
+      end
+     elif ch == "\""
+      quoted = true
+     elif ch == "{"
+      depth += 1
+     elif ch == "}"
+      depth -= 1
+      if depth == 0
+       var item = json.load(body[start..cursor])
+       if !isinstance(item, map) return nil end
+       result.push(item)
+       cursor += 1
+       break
+      end
+     end
+     cursor += 1
+    end
+    if depth != 0 return {"events":result, "complete":false} end
+   end
+   return {"events":result, "complete":false}
+  end
+  def on_reply(body, code)
+   self.waiting = false
+   if code != 200
+    self.empty_confirmed = false
+    self.status = code == 0 ? "Netz/Timeout" : "HTTP " + str(code)
+    self.ticks = 120
+    return
+   end
+   if body == nil
+    self.retry("Antwort zu gross")
+    return
+   end
+   try
+    var parsed = self.parse_events(body)
+    if !isinstance(parsed, map)
+     self.retry("API-Format")
+     return
+    end
+    var best = nil
+    var now = int(epoch_ms() / 1000)
+    for item : parsed["events"]
+     var ev = self.build(item)
+     if ev != nil && (best == nil || ev["epoch"] < best["epoch"])
+      best = ev
+     end
+    end
+    if best != nil
+     self.empty_confirmed = false
+     self.bus_start = -1
+     self.bus_done = false
+     self.last_ok = now_ms()
+     self.selected = best
+     self.prepare_line(best["line"])
+     self.status = "OK"
+     self.retry_stage = 0
+     self.attempt_n = 6
+     self.scan_after = 0
+     self.scan_pages = 0
+     return
+    end
+    if !parsed["complete"]
+     self.retry("Antwort unvollstaendig")
+     return
+    end
+    # A page with only cancelled or unrelated stops is not an empty timetable.
+    if size(parsed["events"]) > 0
+     var last = 0
+     for item : parsed["events"]
+      var place = item.find("place")
+      if isinstance(place, map)
+       var stamp = self.iso_second(place.find("departure", place.find("scheduledDeparture")))
+       if stamp != nil && stamp > last last = stamp end
+      end
+     end
+     var horizon = now + clamp(num(store.get("search_hours"), 24), 1, 72) * 3600
+     if last > now && last < horizon && self.scan_pages < 10
+      self.scan_after = last + 1
+      self.scan_pages += 1
+      self.retry_stage = 0
+      self.attempt_n = 6
+      self.next_request = now_ms() + 3500
+      self.status = "Suche weitere Abfahrten"
+      return
+     end
+     if self.scan_pages >= 10 || last <= now
+      self.empty_confirmed = false
+      self.status = "Noch keine passende Abfahrt"
+      self.ticks = 120
+      return
+     end
+    end
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = true
+    self.status = "Keine Abfahrt in " + str(store.get("search_hours", 24)) + "h"
+    self.retry_stage = 0
+    self.attempt_n = 6
+    self.scan_after = 0
+    self.scan_pages = 0
+   except .. as err, message
+    self.retry("Antwort unlesbar")
+    log("TransitNext: " + str(message))
+   end
+  end
+  def retry(reason)
+   self.empty_confirmed = false
+   if self.retry_stage == 0
+    self.retry_stage = 1
+    self.attempt_n = 2
+    self.next_request = now_ms() + 7000
+    self.status = "Abfrage verkleinert"
+   elif self.retry_stage == 1
+    self.retry_stage = 2
+    self.attempt_n = 1
+    self.next_request = now_ms() + 7000
+    self.status = "Pruefe Einzelabfahrt"
+   else
+    self.status = reason
+    self.next_request = 0
+    self.ticks = 120
+    log("TransitNext: " + reason)
+   end
+  end
+  def loop()
+   if self.selected != nil && self.remaining() <= 300000 && now_ms() - self.last_poll >= 60000 && !self.waiting && self.next_request == 0
+    self.ticks = 0
+   end
+   if self.selected != nil && self.remaining() < -30000
+    self.selected = nil
+    self.prepare_line("-")
+    self.empty_confirmed = false
+    self.bus_start = -1
+    self.status = "Suche naechste..."
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+   end
+   if !self.waiting && self.next_request > 0 && now_ms() >= self.next_request
+    self.next_request = 0
+    self.request()
+   elif !self.waiting && self.next_request == 0 && self.ticks <= 0
+    self.retry_stage = 0
+    self.attempt_n = 6
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.request()
+   end
+   self.ticks -= 1
+  end
+  def on_button(btn)
+   if btn == "select"
+    self.next_request = 0
+    self.ticks = 0
+    self.scan_after = 0
+    self.scan_pages = 0
+    self.attempt_n = 6
+    if !self.waiting self.request() end
+    return true
+   end
+   return false
+  end
+  def should_show()
+   return !(store.get("hide_empty", true) && self.empty_confirmed && self.selected == nil)
+  end
+  def on_show()
+   self.bus_start = -1
+   self.bus_done = false
+  end
+  def shade(c, amount)
+   var r = (c >> 16) & 255
+   var g = (c >> 8) & 255
+   var b = c & 255
+   var target = amount > 0 ? 255 : 0
+   var mix = amount > 0 ? amount : -amount
+   return rgb(r + int((target - r) * mix / 100), g + int((target - g) * mix / 100), b + int((target - b) * mix / 100))
+  end
+  def draw_badge(c, w, h)
+   var level = int(clamp(num(store.get("line_relief", 2), 2), 1, 3))
+   rect_fill(0, 0, w, h, c)
+   if level > 1
+    for y : 1 .. h - 2
+     var tint = int((level - 1) * 14 * (h - 1 - 2 * y) / (h - 1))
+     rect_fill(1, y, w - 2, 1, self.shade(c, tint))
+    end
+   end
+   var light = self.shade(c, 15 + 12 * level)
+   var dark = self.shade(c, -18 - 12 * level)
+   line(0, 0, w - 2, 0, light)
+   line(0, 1, 0, h - 2, light)
+   line(0, h - 1, w - 1, h - 1, dark)
+   line(w - 1, 0, w - 1, h - 2, dark)
+  end
+  def remaining()
+   var now = epoch_ms()
+   return (self.selected["epoch"] - int(now / 1000)) * 1000 - int(now % 1000)
+  end
+  def fresh()
+   return self.status == "OK" && now_ms() - self.last_ok <= 120000
+  end
+  def centered_time(left, baseline, span)
+   var pieces = self.time_segments()
+   var total = ""
+   for piece : pieces
+    total += piece[0]
+   end
+   total = text_ink_width(total)
+   if total > span
+    scroll_text(left, baseline, span, pieces, store.get("time_color", 0xFFC247), self.scroll_top)
+    return
+   end
+   var x = left + int((span - total) / 2)
+   for piece : pieces
+    text(x, baseline, piece[0], piece[1])
+    x += text_width(piece[0])
+   end
+  end
+  def time_label()
+   var mode = store.get("mode", "time_delay")
+   if mode == "countdown"
+    return str(max(0, int(self.remaining() / 60000))) + "min"
+   end
+   if mode == "time_delay" && self.selected["scheduled"] != nil
+    return self.local_time(self.selected["scheduled"])
+   end
+   return self.local_time(self.selected["epoch"])
+  end
+  def time_segments()
+   var main = self.time_label()
+   var color = store.get("time_color", 0xFFC247)
+   var pieces = [[main, color]]
+   if store.get("mode", "time_delay") == "time_delay" && store.get("show_delay", true) && self.selected["realtime"] && self.selected["scheduled"] != nil
+    var delay = self.selected["delay"]
+    var suffix = delay >= 0 ? "+" + str(delay) : str(delay)
+    var tint = delay > 0 ? 0xFF3030 : delay == 0 ? 0xFFD000 : 0x39DB7B
+    pieces.push([" " + suffix, tint])
+   end
+   return pieces
+  end
+  def bus_due()
+   if self.selected == nil || !self.fresh() return false end
+   var mode = self.selected["mode"]
+   return store.get("zero_mode", "bus") == "bus" && (mode == "BUS" || mode == "COACH") && self.remaining() < 60000 && self.remaining() >= -30000
+  end
+  def duration()
+   if self.bus_due() return 12000 end
+   return 0
+  end
+  def draw_bus(left)
+   if self.bus_start < 0 self.bus_start = now_ms() end
+   var t = now_ms() - self.bus_start
+   if t >= 6200 return true end
+   var span = width() - left
+   var bw = span - 2
+   var bh = min(height(), 14)
+   var top = int((height() - bh) / 2)
+   var mid = int((span - bw) / 2)
+   var x = mid
+   if t < 2000
+    x = -bw + int((mid + bw) * t * (4000 - t) / 4000000)
+   elif t >= 4200
+    var dt = t - 4200
+    x = mid + int((span - mid) * dt * dt / 4000000)
+   end
+   var reverse = store.get("bus_direction", "links_rechts") == "rechts_links"
+   var door = 0
+   if !reverse && t >= 2300 && t < 3900
+    if t < 2700
+     door = min(2, int((t - 2300) / 200) + 1)
+    elif t < 3500
+     door = 2
+    else
+     door = max(0, 2 - int((t - 3500) / 200))
+    end
+   end
+   var window_end = bh - 5
+   var dx = bw - 6
+   var dw = 4
+   var fw = bw - 11
+   if bh == 8
+    dx = bw - 4
+    dw = 3
+    fw = bw - 8
+   end
+   for y : 0 .. bh - 1
+    for col : 0 .. bw - 1
+     var c = -1
+     if y == 0 && col >= 2 && col < bw - 3 c = 0xFFF0B0 end
+     if y >= 1 && y < bh - 2
+      if (col > 0 && col < bw - 1) || y >= 3
+       c = 0xF5B62B
+       if y >= bh - 4 c = 0xCB7417 end
+       if y >= 2 && y <= window_end && col >= 2 && col < bw - 2
+        c = 0x89D6F2
+        if col % 6 == 1 c = 0x254453 end
+       end
+       if col == bw - 1 && y >= 3 && y <= window_end c = 0xC1EAF7 end
+       if y == bh - 4 && col == bw - 1 c = 0xFFF9CD end
+       if y == bh - 4 && col == 0 c = 0xF04430 end
+       if !reverse && col >= dx && col < dx + dw && y >= 2 && y < bh - 2
+        c = 0x31434A
+        if y <= window_end c = 0x9BDEEC end
+        if col == dx + 1 || col == dx + 2 c = 0x536168 end
+        if door > 0 && col >= dx + 2 - door && col < dx + 2 + door
+         c = 0x10181E
+         if y == bh - 3 c = 0xBCC5C7 end
+        end
+       end
+      end
+     end
+     if y >= bh - 3 && ((col >= 3 && col <= 6) || (col >= fw - 1 && col <= fw + 2))
+      c = 0x1B252E
+      if y == bh - 2 && (col == 4 || col == fw) c = 0xB5C2CB end
+     end
+     var px = left + x + col
+     if reverse px = left + span - 1 - x - col end
+     if c >= 0 && px >= left && px < width() pixel(px, top + y, c) end
+    end
+   end
+   return false
+  end
+  def draw()
+   clear()
+   if width() < 52 || height() < 16
+    scroll_text("TransitNext: 52x16", 0xFFC247)
+    return
+   end
+   var c = store.get("line_color")
+   if store.get("auto_line_colors") c = self.auto_color end
+   self.draw_badge(c, 17, 16)
+   if self.line_big
+    var shadow = self.shade(c, -15 * int(clamp(num(store.get("line_relief", 2), 2), 1, 3)))
+    for dot : self.line_pixels
+     var sw = min(dot[2], 15 - dot[0])
+     var sh = min(2, 14 - dot[1])
+     if sw > 0 && sh > 0 rect_fill(dot[0] + 1, dot[1] + 1, sw, sh, shadow) end
+    end
+    for dot : self.line_pixels
+     rect_fill(dot[0], dot[1], dot[2], 2, 0xFFFFFF)
+    end
+   else
+    font("small")
+    var value = self.line_fallback
+    var split = string.find(value, " ")
+    if split > 0 && split < 4 && size(value) - split - 1 < 4
+     text(1, 6, value[0..split - 1], 0xFFFFFF)
+     text(1, 14, value[split + 1..-1], 0xFFFFFF)
+    else
+     text(1, 10, size(value) > 3 ? value[0..2] : value, 0xFFFFFF)
+    end
+   end
+   font("small")
+   if self.selected == nil
+    scroll_text(18, 6, 34, self.status, store.get("time_color"), self.scroll_top)
+    scroll_text(18, 14, 34, self.short_stop, store.get("text_color"), self.scroll_bottom)
+    return
+   end
+   if self.bus_due() && !self.bus_done
+    self.bus_done = self.draw_bus(18)
+    if !self.bus_done return end
+   end
+   self.centered_time(18, 6, 34)
+   scroll_text(18, 14, 34, self.short_stop + " > " + self.selected["direction"], store.get("text_color"), self.scroll_bottom)
+  end
+end
+return TransitNext()
+</script><script>'use strict';
+const API='https://api.transitous.org', VERSION='20261113.233708', LS_KEY='TransitNext.devices.v4', $=id=>document.getElementById(id);
+const DEFAULTS=Object.freeze({refresh:5,search_hours:24,mode:'time_delay',hide_empty:true,zero_mode:'bus',bus_direction:'links_rechts',line_relief:'3'});
+const state={devices:[],additions:[],centers:[],center:null,stops:[],chosen:null,step:0,scanAbort:null,directionAbort:null,installAbort:null,busy:false,searchRevision:0};
+let serial=0;
+const remoteTemplates=Object.create(null);
+async function loadTemplates(){
+ if(!/^https?:$/.test(location.protocol))return;
+ for(const [model,file] of [['TC001','Clocks/TC001.ax'],['TC002','Clocks/TC002.ax']]){
+  try{const r=await fetch(new URL(file,location.href),{cache:'no-store',credentials:'omit'});
+   if(!r.ok)continue;const source=await r.text();
+   if(source.includes('# @name TransitNext')&&source.includes('# @version '+VERSION)&&source.includes('__STOP_ID__'))remoteTemplates[model]=source;
+  }catch{}
+ }
+}
+
+const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/g,'ss').replace(/[^a-zA-Z0-9]+/g,' ').trim().toLowerCase();
+const text=(tag,val,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=String(val??'');return e};
+const button=(label,click,cls='ghost small')=>{const e=document.createElement('button');e.type='button';e.className=cls;e.textContent=label;e.onclick=click;return e};
+const note=(el,message,type='')=>{el.className='statusline'+(type?' '+type:'');el.textContent=message};
+const stopIdSafe=s=>typeof s==='string'&&s.length>0&&s.length<=160&&/^[A-Za-z0-9:._~\/-]+$/.test(s);
+const errorMessage=e=>e?.message||String(e);
+const errorStatus=(e)=>Number(e?.status||0);
+const safeValue=v=>String(v??'').replace(/[\r\n]+/g,' ').slice(0,150);
+const field=(label,control)=>{const box=document.createElement('div');box.className='field';const l=document.createElement('label');l.textContent=label;box.append(l,control);return box};
+const urlOf=raw=>{let u;try{u=new URL(/^https?:\/\//i.test(String(raw))?raw:'http://'+raw)}catch{throw Error('IP-Adresse oder lokalen Hostnamen prüfen.')}if(!['http:','https:'].includes(u.protocol)||!u.hostname||u.search||u.hash||u.username||u.password||u.pathname!=='/')throw Error('Nur die lokale Geräteadresse mit optionalem Port eingeben.');const m=u.hostname.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);if(m){const oct=m.slice(1).map(Number);if(oct.some(x=>x<0||x>255)||!(oct[0]===10||oct[0]===192&&oct[1]===168||oct[0]===172&&oct[1]>=16&&oct[1]<=31))throw Error('Nur private lokale IPv4-Adressen erlaubt.')}else if(!/^[a-z\d][a-z\d.-]*$/i.test(u.hostname)||u.hostname.includes('.')&&!u.hostname.endsWith('.local')&&!u.hostname.endsWith('.lan'))throw Error('Nur lokale Hostnamen erlaubt.');return u.origin};
+function auth(d){if(!d.user&&!d.password)return null;if(String(d.user).includes(':'))throw Error('Benutzername darf keinen Doppelpunkt enthalten.');let bytes=new TextEncoder().encode((d.user||'')+':'+(d.password||'')),binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);return 'Basic '+btoa(binary)}
+async function deviceRequest(d,path,opt={}){
+ const h=new Headers(opt.headers||{});h.set('Accept',opt.raw?'text/plain':'application/json');const a=auth(d);if(a)h.set('Authorization',a);
+ const controller=new AbortController(),external=()=>controller.abort();opt.signal?.addEventListener('abort',external,{once:true});if(opt.signal?.aborted)controller.abort();const timer=setTimeout(external,opt.timeout||18000);let res;
+ try{res=await fetch(d.address+path,{method:opt.method||'GET',body:opt.body,headers:h,signal:controller.signal,cache:'no-store',credentials:'omit',redirect:'error',targetAddressSpace:'local'})}
+ catch(e){throw Error(opt.signal?.aborted?'Aktion abgebrochen.':e.name==='AbortError'?'Zeitüberschreitung.':'Gerät nicht erreichbar (CORS, lokale Netzwerkfreigabe oder Netzwerk).')}
+ finally{clearTimeout(timer);opt.signal?.removeEventListener('abort',external)}
+ const body=await res.text();if(!res.ok){let message='';try{message=JSON.parse(body)?.error?.message||''}catch{}const e=new Error(res.status===401?'Anmeldung erforderlich (HTTP 401).':`AWTRIX HTTP ${res.status}${message?' · '+message:''}`);e.status=res.status;throw e}
+ if(opt.raw)return body;let data=null;try{data=body?JSON.parse(body):null}catch{throw Error('Uhr hat ungültige JSON-Daten geliefert.')}if(opt.method&&opt.method!=='GET'&&(!data||data.ok!==true||data.error))throw Error(`Uhr hat den Vorgang nicht fehlerfrei bestätigt${data?.error?': '+JSON.stringify(data.error):''}.`);return data;
+}
+async function optionalDevice(d,path){try{return await deviceRequest(d,path)}catch(e){if([404,405].includes(errorStatus(e)))return null;throw e}}
+function modelFrom(data,caps){if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Ungültige AWTRIX-Geräteinformationen.');const board=String(data.boardType||'').toLowerCase();if(!['awtrixng','tc002','tc001'].includes(board))throw Error('Keine bestätigte AWTRIX-NG-Uhr.');if(data.scriptingRunning===false)throw Error('Skriptbetrieb auf dieser Uhr ausgeschaltet.');const display=caps?.display||{};let width=Number(display.width),height=Number(display.height);if((!Number.isInteger(width)||!Number.isInteger(height))&&board==='tc002'){width=52;height=16}const model=width===32&&height===8?'TC001':width===52&&height===16?'TC002':null;if(!model||board==='tc002'&&model!=='TC002'||board==='tc001'&&model!=='TC001')throw Error('Displaytyp konnte nicht eindeutig ermittelt werden.');return {model,width,height,board,uid:String(data.uid||''),version:String(data.version||'')};}
+function candidate(a){return a?.origin==='script'&&(/^(TransitNext(?:_\d{1,3})?)$/.test(a.name)||a.meta?.name==='TransitNext')}
+async function inventory(d,{signal}={}){
+ const info=await deviceRequest(d,'/api/v1/device',{signal});const caps=await optionalDevice(d,'/api/v1/capabilities');const model=modelFrom(info,caps);
+ const all=await deviceRequest(d,'/api/v1/apps',{signal});if(!Array.isArray(all))throw Error('App-Liste ist nicht verfügbar.');const installed=[];
+ for(const app of all.filter(candidate)){
+  const code=await deviceRequest(d,'/api/v1/apps/script/'+encodeURIComponent(app.name),{raw:true,signal});if(!/^#\s*@name\s+TransitNext\s*$/m.test(code)||!/^#\s*@author\s+Q14siX\s*$/m.test(code))continue;
+  const config=await deviceRequest(d,'/api/v1/apps/'+encodeURIComponent(app.name)+'/config',{signal});if(!Array.isArray(config?.fields))throw Error('Einstellungen von '+app.name+' sind nicht lesbar.');const values=Object.fromEntries(config.fields.filter(f=>typeof f?.key==='string').map(f=>[f.key,f.value]));
+  if(!stopIdSafe(values.stop_id))throw Error('Unvollständige Haltestellen-Konfiguration in '+app.name+'.');const ids=String(values.stop_ids||values.stop_id).split('|').filter(stopIdSafe);installed.push({name:app.name,id:values.stop_id,ids:[...new Set([values.stop_id,...ids])],stop_name:String(values.stop_name||values.stop_id),stop_label:String(values.stop_label||values.stop_name||values.stop_id),settings:values,choice:'',enabled:app.enabled!==false,slot:Number.isInteger(app.slot)?app.slot:null,source:code});
+ }
+ installed.sort((a,b)=>(a.slot??999)-(b.slot??999));return {model,all,installed};
+}
+function signature(x){return JSON.stringify({model:x.model?.model,uid:x.model?.uid,apps:x.installed.map(v=>[v.name,v.id,v.ids.slice().sort().join('|'),v.source]).sort((a,b)=>a[0].localeCompare(b[0]))})}
+function makeDevice(address){return {key:'clock'+ ++serial,address,selected:false,user:'',password:'',status:'Wird erkannt und ausgelesen',state:'loading',model:null,all:[],installed:[],signature:'',rev:0,log:[]}}
+function persist(){try{localStorage.setItem(LS_KEY,JSON.stringify({addresses:state.devices.map(x=>x.address)}))}catch{}}
+function restore(){try{const old=JSON.parse(localStorage.getItem(LS_KEY)||'{}');if(Array.isArray(old.addresses))for(const address of old.addresses.slice(0,20)){try{state.devices.push(makeDevice(urlOf(address)));state.devices.at(-1).state='idle';state.devices.at(-1).status='Gespeicherte Adresse – noch nicht geprüft.'}catch{}}}catch{}}
+async function connect(d){if(d.connecting||state.busy)return;d.connecting=true;d.state='loading';d.status='Lese Gerät, Modell und installierte Haltestellen …';const rev=++d.rev;renderDevices();try{const x=await inventory(d);if(d.rev!==rev)return;d.model=x.model;d.all=x.all;d.installed=x.installed;d.signature=signature(d);d.state='ready';d.status=x.installed.length?`${x.installed.length} bestehende TransitNext-Haltestelle(n).`: 'Keine TransitNext-Haltestellen: nur Neuinstallation möglich.'}catch(e){if(d.rev!==rev)return;d.state=e.status===401?'auth':'error';d.status=errorMessage(e);d.model=null;d.installed=[];d.signature='';d.all=[]}finally{if(d.rev===rev){d.connecting=false;renderDevices();persist()}}}
+function addDevice(raw){const address=urlOf(raw);let d=state.devices.find(x=>x.address===address);if(!d){if(state.devices.length>=20)throw Error('Maximal 20 Uhren.');d=makeDevice(address);state.devices.push(d)}renderDevices();persist();connect(d);return d}
+function selected(){return state.devices.filter(d=>d.selected)}
+function readySelected(){return selected().filter(d=>d.state==='ready')}
+function renderDevices(){const root=$('deviceCards');root.replaceChildren();$('deviceCount').textContent=state.devices.length;if(!state.devices.length){root.append(text('div','Noch keine Geräte erkannt.','no-content'));return}
+ for(const d of state.devices){const c=document.createElement('article');c.className='device'+(d.selected?' selected':'');const h=document.createElement('div');h.className='device-heading';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=d.selected;checkbox.disabled=state.busy||d.state!=='ready';checkbox.setAttribute('aria-label',d.address+' auswählen');checkbox.onchange=()=>{d.selected=checkbox.checked;renderDevices()};h.append(checkbox);const label=document.createElement('div');label.className='title';label.append(text('strong',d.address),text('p',d.model?`${d.model.model} · ${d.model.width} × ${d.model.height} · AWTRIX NG ${d.model.version}`:'Modell wird bei Verbindung automatisch geprüft.'));h.append(label,text('span',d.state==='ready'?'Erkannt':d.state==='auth'?'Anmeldung nötig':d.state==='loading'?'Prüfe …':'Nicht geprüft','pill '+(d.state==='ready'?'good':d.state==='auth'?'warn':'error')));c.append(h);c.append(text('p',d.status,'statusline '+(d.state==='ready'?'good':d.state==='auth'?'warn':d.state==='loading'?'':'error')));
+  if(d.state==='auth'||d.authOpen){const f=document.createElement('div');f.className='two';for(const [k,t]of [['user','Benutzername'],['password','Passwort']]){const input=document.createElement('input');input.value=d[k];input.type=k==='password'?'password':'text';input.autocomplete='off';input.oninput=()=>d[k]=input.value;f.append(field(t,input))}c.append(f)}
+  const tools=document.createElement('div');tools.className='device-tools';if(d.state!=='ready'&&d.state!=='auth')tools.append(button(d.authOpen?'Zugangsdaten ausblenden':'Zugangsdaten eingeben',()=>{d.authOpen=!d.authOpen;renderDevices()}));tools.append(button('Neu prüfen',()=>connect(d)));tools.append(button('Weboberfläche öffnen',()=>window.open(d.address+'/','_blank','noopener,noreferrer'),'ghost small'));tools.append(button('Entfernen',()=>{if(state.busy)return;state.devices=state.devices.filter(x=>x!==d);renderDevices();persist()},'danger small'));c.append(tools);
+  if(d.state==='ready'){const list=document.createElement('div');list.className='clock-list';if(d.installed.length)for(const item of d.installed){const r=document.createElement('div');r.className='installed';const meta=document.createElement('div');meta.append(text('div',item.stop_name,'name'),text('div',`${item.name} · ${item.id}`,'detail'));r.append(meta,text('span','Vorhanden','pill good'));list.append(r)}else list.append(text('div','Keine TransitNext-Haltestellen auf dieser Uhr.','no-content'));c.append(list)}root.append(c)}
+}
+function noPreselect(select){select.selectedIndex=0;select.value=''}
+function renderExisting(){const root=$('existingCards');root.replaceChildren();for(const d of selected()){const card=document.createElement('div');card.className='summary-card';card.append(text('h3',d.address+' · '+(d.model?.model||'Nicht erkannt')));if(!d.installed.length)card.append(text('div','Keine TransitNext-Apps vorhanden. Ein Update ist hier nicht möglich.','no-content'));for(const s of d.installed){const row=document.createElement('div');row.className='installed';const meta=document.createElement('div');meta.append(text('div',s.stop_name,'name'),text('div',s.name+' · '+s.id,'detail'));row.append(meta);const dropdown=document.createElement('select');dropdown.add(new Option('Aktion auswählen',''));for(const [id,label]of [['keep','Beibehalten'],['update','Aktualisieren'],['delete','Löschen']])dropdown.add(new Option(label,id));dropdown.value=s.choice||'';dropdown.onchange=()=>{s.choice=dropdown.value;renderReview()};row.append(field('Aktion für diesen Eintrag',dropdown));card.append(row)}root.append(card)}if(!selected().length)root.append(text('div','Bitte zuerst mindestens eine erkannte Uhr ausdrücklich auswählen.','no-content'))}
+function renderAdditions(){
+ const root=$('additionList');root.replaceChildren();$('additionCount').textContent=state.additions.length;
+ if(!state.additions.length){root.append(text('div','Noch keine Haltestellen vorgemerkt.','no-content'));return}
+ for(let n=0;n<state.additions.length;n++){
+  const x=state.additions[n],card=document.createElement('div');card.className='add-entry';
+  card.append(text('strong',x.label));card.append(text('div',x.id,'muted tiny'));
+  const tools=document.createElement('div');tools.className='row';
+  tools.append(button('↑',()=>{if(n>0)[state.additions[n-1],state.additions[n]]=[state.additions[n],state.additions[n-1]];renderAdditions()},'ghost small'));
+  tools.append(button('↓',()=>{if(n<state.additions.length-1)[state.additions[n+1],state.additions[n]]=[state.additions[n],state.additions[n+1]];renderAdditions()},'ghost small'));
+  tools.append(button('Entfernen',()=>{state.additions.splice(n,1);renderAdditions();renderReview()},'danger small'));
+  card.append(tools);root.append(card)
+ }
+}
+function matchesPlace(s){return s?.type==='PLACE'&&typeof s.name==='string'&&Number.isFinite(Number(s.lat))&&Number.isFinite(Number(s.lon))}
+function area(s){return (Array.isArray(s?.areas)?s.areas:[]).find(a=>typeof a?.name==='string')?.name||s.city||s.locality||''}
+async function transit(path,params,signal,timeoutMs=22000){const u=new URL(API+path);u.search=new URLSearchParams(params);const ac=new AbortController();const cancel=()=>ac.abort();signal?.addEventListener('abort',cancel,{once:true});const timer=setTimeout(cancel,timeoutMs);try{const r=await fetch(u,{signal:ac.signal,cache:'no-store'});if(!r.ok)throw Error('Fahrplan-API HTTP '+r.status);return await r.json()}finally{clearTimeout(timer);signal?.removeEventListener('abort',cancel)}}
+function distance(a,b){const toRad=Math.PI/180,dLat=(a.lat-b.lat)*toRad,dLon=(a.lon-b.lon)*toRad,h=Math.sin(dLat/2)**2+Math.cos(a.lat*toRad)*Math.cos(b.lat*toRad)*Math.sin(dLon/2)**2;return 12742*Math.asin(Math.min(1,Math.sqrt(h)))}
+function bbox(center,r){const dLat=r/111.32,dLon=r/(111.32*Math.max(.1,Math.cos(center.lat*Math.PI/180)));return {min:(center.lat-dLat)+','+(center.lon-dLon),max:(center.lat+dLat)+','+(center.lon+dLon)}}
+function belongs(s,c){const city=norm(c.name),name=norm(s.name),other=norm(s.area);if(other===city||other.startsWith(city+' '))return true;if(name===city||name.startsWith(city+' '))return true;if(s.name.includes(',')||other&&other!==city)return false;return distance(s,c)<2.5}
+function stopListNormalize(raw,center){
+ if(!Array.isArray(raw))throw Error('Haltestellen-API liefert unerwartetes Format.');
+ const map=new Map();
+ for(const item of raw){
+  const id=item?.stopId||item?.id;
+  if(!stopIdSafe(id)||typeof item?.name!=='string')continue;
+  const lat=Number(item.lat),lon=Number(item.lon);
+  if(!Number.isFinite(lat)||!Number.isFinite(lon))continue;
+  const stop={id,name:safeValue(item.name),area:safeValue(area(item)),lat,lon,platform:safeValue(item.platformCode||item.track||item.scheduledTrack||''),ids:[id],directions:new Map(),nextStops:new Set()};
+  if(belongs(stop,center))map.set(id,stop);
+ }
+ const entries=[...map.values()];
+ // Parent stops never replace their child platforms when both exist.
+ const leaves=entries.filter(s=>!entries.some(k=>k!==s&&k.id.startsWith(s.id+':')&&norm(k.name)===norm(s.name)));
+ const groups=[];
+ for(const s of leaves){
+  s.named=norm(s.name);
+  const g=groups.find(g=>g.named===s.named&&g.ids.join('|').length+s.id.length+1<=240&&
+   (!(g.platform&&s.platform&&norm(g.platform)!==norm(s.platform)))&&
+   ((g.platform&&s.platform&&norm(g.platform)===norm(s.platform)&&distance(g,s)<=.02)||distance(g,s)<=.002));
+  if(g)g.ids.push(s.id);
+  else groups.push(s);
+ }
+ formatStopLabels(groups,center);
+ return groups;
+}
+function formatStopLabels(groups,center=state.center){
+ const total=new Map();
+ for(const g of groups)total.set(g.named,(total.get(g.named)||0)+1);
+ for(const g of groups){
+  const base=g.name.includes(',')?g.name:(center?.name?center.name+', ':'')+g.name;
+  const places=[...g.directions.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de')).map(([name])=>name);
+  const descriptors=[];
+  if(g.platform)descriptors.push('Steig/Gleis '+g.platform);
+  if(total.get(g.named)>1){
+   if(places.length)descriptors.push('Richtung '+places.slice(0,3).join(' / ')+(places.length>3?' u. a.':''));
+   else descriptors.push('Richtung nicht verfügbar');
+  }
+  g.label=base+(descriptors.length?' · '+descriptors.join(' · '):'');
+ }
+ // Equally labelled but physically distinct stops remain distinguishable without inventing bay numbers.
+ const same=new Map();
+ for(const g of groups){const k=norm(g.label);same.set(k,(same.get(k)||0)+1)}
+ for(const g of groups)if(same.get(norm(g.label))>1)g.label+=' · '+g.lat.toFixed(5)+', '+g.lon.toFixed(5);
+ groups.sort((a,b)=>a.label.localeCompare(b.label,'de',{numeric:true,sensitivity:'base'}));
+}
+function departureHeading(ev){
+ const h=typeof ev?.headsign==='string'&&ev.headsign.trim()?ev.headsign:ev?.tripTo?.name;
+ return typeof h==='string'?safeValue(h).trim():'';
+}
+function collectPlatformDepartures(groups,events){
+ for(const ev of events||[]){
+  if(ev?.cancelled||ev?.tripCancelled||ev?.pickupDropoffType==='NOT_ALLOWED'||ev?.place?.pickupType==='NOT_ALLOWED')continue;
+  const place=ev?.place,id=place?.stopId;
+  if(!stopIdSafe(id))continue;
+  for(const g of groups){
+   if(!g.ids.includes(id))continue;
+   const heading=departureHeading(ev);
+   if(heading)g.directions.set(heading,(g.directions.get(heading)||0)+1);
+   const next=ev?.nextStops?.[0];
+   if(next){const following=String(next.stopId||next.name||'');if(following)g.nextStops.add(norm(following))}
+   const track=safeValue(place?.track||place?.scheduledTrack||'');
+   if(track&&!g.platform)g.platform=track;
+  }
+ }
+}
+function mergeSamePlatform(groups){
+ // Never merge explicitly different platform numbers, even when routes share a destination.
+ for(let i=0;i<groups.length;i++){
+  const a=groups[i];
+  for(let j=i+1;j<groups.length;){
+   const b=groups[j];
+   if(a.named!==b.named||a.ids.join('|').length+b.ids.join('|').length+1>240||
+      a.platform&&b.platform&&norm(a.platform)!==norm(b.platform)){j++;continue}
+   const near=distance(a,b);
+   const sameCode=a.platform&&b.platform&&norm(a.platform)===norm(b.platform)&&near<=.02;
+   const sameNext=near<=.015&&[...a.nextStops].some(id=>b.nextStops.has(id));
+   const sameHeading=near<=.006&&[...a.directions.keys()].some(s=>[...b.directions.keys()].some(t=>norm(s)===norm(t)));
+   if(!sameCode&&!sameNext&&!sameHeading){j++;continue}
+   a.ids.push(...b.ids);
+   if(!a.platform)a.platform=b.platform;
+   for(const [name,n] of b.directions)a.directions.set(name,(a.directions.get(name)||0)+n);
+   for(const stop of b.nextStops)a.nextStops.add(stop);
+   groups.splice(j,1);
+  }
+ }
+}
+async function enrichPlatformDirections(rev){
+ const namedGroups=new Map();
+ for(const s of state.stops){const a=namedGroups.get(s.named)||[];a.push(s);namedGroups.set(s.named,a)}
+ const ambiguous=[...namedGroups.values()].filter(items=>items.length>1);
+ if(!ambiguous.length){note($('searchStatus'),`${state.stops.length} Bahnsteige und Haltepositionen gefunden.`,state.stops.length?'good':'warn');return;}
+ const ac=new AbortController();state.directionAbort=ac;
+ let cursor=0,done=0;
+ async function run(){
+  while(cursor<ambiguous.length&&!ac.signal.aborted){
+   const pair=ambiguous[cursor++];
+   try{
+    // One query covers all close-by boarding positions of the same named stop.
+    const data=await transit('/api/v6/stoptimes',{stopId:pair[0].id,arriveBy:'false',radius:'85',exactRadius:'true',fetchStops:'true',withAlerts:'false',n:'48'},ac.signal,7500);
+    if(rev!==state.searchRevision||ac.signal.aborted)return;
+    collectPlatformDepartures(pair,data?.stopTimes);
+    // A child-stop lookup can return only its own departures; retrieve an unresolved bay directly.
+    for(const g of pair.filter(s=>!s.directions.size).slice(0,3)){
+     if(ac.signal.aborted)break;
+     try{
+      const direct=await transit('/api/v6/stoptimes',{stopId:g.id,arriveBy:'false',radius:'0',exactRadius:'true',fetchStops:'true',withAlerts:'false',n:'24'},ac.signal,6000);
+      if(rev!==state.searchRevision||ac.signal.aborted)return;
+      collectPlatformDepartures([g],direct?.stopTimes);
+     }catch(e){if(ac.signal.aborted)return}
+    }
+   }catch(e){if(ac.signal.aborted)return}
+   done++;
+   if(rev===state.searchRevision){formatStopLabels(state.stops);populateStops(true);note($('searchStatus'),`Richtungen werden ermittelt: ${done}/${ambiguous.length} Haltestellen.`, '');}
+  }
+ }
+ try{await Promise.all(Array.from({length:Math.min(4,ambiguous.length)},run));}
+ finally{
+  if(state.directionAbort===ac)state.directionAbort=null;
+  if(rev===state.searchRevision&&!ac.signal.aborted){
+   mergeSamePlatform(state.stops);
+   formatStopLabels(state.stops);
+   populateStops(true);
+   note($('searchStatus'),`${state.stops.length} Bahnsteige und Haltepositionen gefunden. Fahrtrichtungen aus Abfahrtsdaten ergänzt, soweit verfügbar.`,state.stops.length?'good':'warn');
+  }
+ }
+}
+function populateCenters(){const sel=$('cityChoice');sel.replaceChildren(new Option('Ort auswählen',''));for(const c of state.centers)sel.add(new Option(c.name+(c.area?' · '+c.area:''),state.centers.indexOf(c).toString()));sel.disabled=!state.centers.length;noPreselect(sel)}
+function populateStops(keep=false){
+ const sel=$('stopChoice'),old=keep?sel.value:'',needle=norm($('stopFilter').value);
+ sel.replaceChildren(new Option('Haltestelle auswählen',''));
+ for(const s of state.stops)if(!needle||norm(s.label).includes(needle))sel.add(new Option(s.label,s.id));
+ sel.disabled=!state.stops.length;
+ if(old&&[...sel.options].some(o=>o.value===old))sel.value=old;
+ else noPreselect(sel);
+ state.chosen=state.stops.find(s=>s.id===sel.value)||null;
+ $('stopAdd').disabled=!state.chosen;
+ $('stopTest').disabled=!state.chosen;
+}
+async function citySearch(){state.directionAbort?.abort();state.directionAbort=null;const term=$('citySearch').value.trim();if(term.length<2){note($('searchStatus'),'Bitte einen Ort mit mindestens zwei Zeichen eingeben.','warn');return}const rev=++state.searchRevision;note($('searchStatus'),'Suche Orte …');state.centers=[];state.stops=[];state.center=null;populateCenters();populateStops();try{let data=await transit('/api/v1/geocode',{text:term,language:'de'});if(!Array.isArray(data)||!data.some(matchesPlace))data=await transit('/api/v1/geocode',{text:term,type:'PLACE',language:'de'});if(rev!==state.searchRevision)return;const seen=new Set();state.centers=(Array.isArray(data)?data:[]).filter(matchesPlace).map(s=>({name:s.name,area:area(s),lat:Number(s.lat),lon:Number(s.lon)})).filter(s=>{const k=norm(s.name)+'|'+s.lat.toFixed(3)+'|'+s.lon.toFixed(3);if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>(norm(a.name)===norm(term)?-1:1)-(norm(b.name)===norm(term)?-1:1)||a.name.localeCompare(b.name,'de'));populateCenters();note($('searchStatus'),state.centers.length?`${state.centers.length} ${state.centers.length===1?'Ort':'Orte'} gefunden. Bitte einen Ort auswählen.`:'Kein Ort gefunden.',state.centers.length?'good':'warn')}catch(e){note($('searchStatus'),errorMessage(e),'error')}}
+async function chooseCity(){
+ state.directionAbort?.abort();state.directionAbort=null;
+ const rev=++state.searchRevision,index=$('cityChoice').value;
+ state.center=index===''?null:state.centers[Number(index)];state.stops=[];
+ populateStops();$('stopFilter').value='';$('stopFilter').disabled=!state.center;
+ if(!state.center)return;
+ const c=state.center;note($('searchStatus'),'Lade Haltestellen des gewählten Orts …');
+ try{
+  const data=await transit('/api/v6/map/stops',bbox(c,10));
+  if(rev!==state.searchRevision)return;
+  if(!Array.isArray(data))throw Error('Ungültige Orts-Haltestellenliste.');
+  state.stops=stopListNormalize(data,c);
+  populateStops();
+  note($('searchStatus'),`${state.stops.length} Haltepositionen gefunden. Ermittle die Fahrtrichtungen …`,state.stops.length?'good':'warn');
+  enrichPlatformDirections(rev);
+ }catch(e){if(rev===state.searchRevision)note($('searchStatus'),errorMessage(e),'error')}
+}
+function chooseStop(){state.chosen=state.stops.find(s=>s.id===$('stopChoice').value)||null;$('stopAdd').disabled=!state.chosen;$('stopTest').disabled=!state.chosen}
+async function testStop(){
+ const s=state.chosen;if(!s)return;
+ note($('searchStatus'),'Frage die Abfahrten dieses Bahnsteigs ab …');
+ try{
+  const data=await transit('/api/v6/stoptimes',{stopId:s.id,arriveBy:'false',fetchStops:'false',radius:'25',exactRadius:'true',withAlerts:'false',n:'36'});
+  const idset=new Set(s.ids),seen=new Set();
+  const times=(data?.stopTimes||[]).filter(x=>{
+   if(!idset.has(x?.place?.stopId)||x?.cancelled||x?.tripCancelled||x?.pickupDropoffType==='NOT_ALLOWED')return false;
+   const key=[x.tripId,x.place.departure||x.place.scheduledDeparture,x.routeShortName].join('|');
+   if(seen.has(key))return false;seen.add(key);return true;
+  }).sort((a,b)=>Date.parse(a.place.departure||a.place.scheduledDeparture)-Date.parse(b.place.departure||b.place.scheduledDeparture));
+  const out=$('departureResult');out.hidden=false;
+  out.replaceChildren(text('strong',times.length?`Abfahrten von diesem Bahnsteig · ${s.label}`:'Keine Abfahrten für diesen Bahnsteig in der API-Antwort.'));
+  for(const e of times.slice(0,6)){
+   const stamp=e.place.departure||e.place.scheduledDeparture||'';
+   const hm=typeof stamp==='string'&&stamp.length>=16?stamp.slice(11,16):'–';
+   out.append(text('div',`${hm} · ${safeValue(e.routeShortName||e.displayName||'ÖPNV')} · Richtung ${departureHeading(e)||'unbekannt'}`,'departure-row'));
+  }
+  note($('searchStatus'),`${times.length} Abfahrten dieses Bahnsteigs ermittelt – alle Linien zusammengefasst.`,times.length?'good':'warn');
+ }catch(e){note($('searchStatus'),errorMessage(e),'error')}
+}
+function addStop(){const s=state.chosen;if(!s)return;if(state.additions.some(x=>x.id===s.id)){note($('searchStatus'),'Haltestelle bereits vorgemerkt.','warn');return}state.additions.push({...s});renderAdditions();note($('searchStatus'),'Haltestelle für alle ausgewählten Uhren vorgemerkt.','good')}
+function scanRange(raw){const m=String(raw).trim().match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)\/(\d{1,2})$/);if(!m)throw Error('Bitte einen CIDR-Bereich wie 192.168.178.0/24 angeben.');const oct=m.slice(1,5).map(Number),prefix=+m[5];if(oct.some(x=>x>255)||prefix<24||prefix>30)throw Error('Aus Sicherheitsgründen nur /24 bis /30 in privaten Netzwerken.');const int=oct.reduce((a,b)=>((a<<8)>>>0)+b,0)>>>0;const mask=prefix===0?0:(0xffffffff<<(32-prefix))>>>0;const net=(int&mask)>>>0;const ips=[];const count=2**(32-prefix);for(let n=1;n<count-1;n++){const i=(net+n)>>>0,ip=[i>>>24,i>>>16&255,i>>>8&255,i&255].join('.');urlOf(ip);ips.push('http://'+ip)}return ips}
+async function probe(address,signal){const c=new AbortController(),abort=()=>c.abort();signal.addEventListener('abort',abort,{once:true});const timeout=setTimeout(abort,2400);try{const r=await fetch(address+'/api/v1/device',{signal:c.signal,cache:'no-store',targetAddressSpace:'local',credentials:'omit',redirect:'error'});if(r.status===401)return {address,kind:'protected'};if(!r.ok)return null;const data=await r.json();if(!['awtrixng','tc002','tc001'].includes(String(data?.boardType||'').toLowerCase()))return null;return {address,kind:'found'}}catch{return null}finally{clearTimeout(timeout);signal.removeEventListener('abort',abort)}}
+async function scan(){if(state.scanAbort)return;if(!$('scanConsent').checked){note($('scanProgress'),'Bitte die Netzwerksuche zuerst ausdrücklich freigeben.','warn');return}let ips;try{ips=scanRange($('subnet').value)}catch(e){note($('scanProgress'),e.message,'error');return}const ac=new AbortController();state.scanAbort=ac;$('scanStart').disabled=true;$('scanStop').hidden=false;let cursor=0,done=0,found=0;note($('scanProgress'),`Suche ${ips.length} private IP-Adressen …`);async function worker(){while(!ac.signal.aborted&&cursor<ips.length){const ip=ips[cursor++],r=await probe(ip,ac.signal);done++;if(r){found++;try{let d=state.devices.find(x=>x.address===r.address);if(!d){if(state.devices.length>=20)continue;d=makeDevice(r.address);state.devices.push(d)}if(r.kind==='protected'){d.state='auth';d.status='HTTP 401 – für die Erkennung Anmeldung eingeben.';renderDevices()}else connect(d)}catch{}}if(done%12===0||done===ips.length)note($('scanProgress'),`${done}/${ips.length} Adressen · ${found} mögliche Uhren.`)}}try{await Promise.all(Array.from({length:12},worker))}finally{state.scanAbort=null;$('scanStart').disabled=!$('scanConsent').checked;$('scanStop').hidden=true;note($('scanProgress'),`Suche ${ac.signal.aborted?'abgebrochen':'abgeschlossen'} · ${found} Gerät(e) gefunden.`,found?'good':'');persist();renderDevices()}}
+function formSettings(){const values={refresh:Number($('interval').value),search_hours:Number($('horizon').value),mode:$('mode').value,hide_empty:$('hideEmpty').value==='true',zero_mode:$('zeroMode').value,bus_direction:$('busDirection').value,line_relief:$('relief').value};if(!['countdown','time','time_delay'].includes(values.mode)||!Number.isInteger(values.refresh)||values.refresh<1||values.refresh>30||(!Number.isInteger(values.search_hours)||values.search_hours<1||values.search_hours>72)||!['true','false'].includes($('hideEmpty').value)||!['normal','bus'].includes(values.zero_mode)||!['1','2','3'].includes(values.line_relief)||!['links_rechts','rechts_links'].includes(values.bus_direction))throw Error('Bitte alle Anzeigeoptionen ausdrücklich auswählen.');return values}
+function validateChosen(){const arr=selected();if(!arr.length)throw Error('Bitte mindestens eine Uhr ausdrücklich auswählen.');if(arr.some(d=>d.state!=='ready'))throw Error('Ausgewählte Uhren zuerst vollständig identifizieren und auslesen.');}
+function tasksFor(d){const tasks=[];for(const i of d.installed){if(i.choice==='update'||i.choice==='delete')tasks.push({type:i.choice,existing:i,name:i.name,description:i.stop_name})}
+ for(const s of state.additions){const existing=d.installed.find(i=>i.ids.some(id=>(s.ids||[s.id]).includes(id)));if(existing){if(existing.choice==='delete')throw Error(`Die Haltestelle „${s.label}“ ist auf ${d.address} gleichzeitig zur Löschung vorgemerkt. Bitte eine der beiden Aktionen entfernen.`);continue}tasks.push({type:'create',stop:s,name:null,description:s.label})}return tasks}
+function changePlan(){const plan=[];for(const d of readySelected()){const tasks=tasksFor(d);plan.push({device:d,tasks})}return plan}
+function renderReview(){const root=$('reviewCards');root.replaceChildren();let total=0,deletes=0;let all=[];try{all=changePlan()}catch(e){root.append(text('div',e.message,'statusline error'));$('install').disabled=true;return}for(const {device:d,tasks} of all){const box=document.createElement('div');box.className='summary-card';box.append(text('h3',d.model.model+' · '+d.address));if(!tasks.length)box.append(text('div','Keine Änderungen erforderlich.','no-content'));for(const s of state.additions){if(d.installed.some(i=>i.ids.some(id=>(s.ids||[s.id]).includes(id)))){const row=document.createElement('div');row.className='summary-item';row.append(text('span','Bereits installiert – unverändert'),text('strong',s.label));box.append(row)}}for(const t of tasks){total++;if(t.type==='delete')deletes++;const row=document.createElement('div');row.className='summary-item';row.append(text('span',t.type==='create'?'Neu installieren':t.type==='update'?'Aktualisieren':'Löschen'),text('strong',t.description));box.append(row)}box.append(button('Weboberfläche dieser Uhr öffnen',()=>window.open(d.address+'/','_blank','noopener,noreferrer'),'ghost small open-clock'));root.append(box)}if(!all.length)root.append(text('div','Bitte zunächst Uhren auswählen.','no-content'));$('deleteConfirm').hidden=deletes===0;$('install').disabled=!total||state.busy;$('install').textContent=total?`${total} ausdrücklich ausgewählte Aktion(en) ausführen`:'Keine Änderungen ausgewählt';}
+const scriptTemplate=model=>{const id=model==='TC001'?'berryTC001':'berryTC002';const val=remoteTemplates[model]||$(id)?.textContent||'';if(!val.includes('# @name TransitNext')||!val.includes('__STOP_ID__'))throw Error(`Skriptvorlage für ${model} fehlt.`);return val};
+function scriptFor(model,stop,settings){const ids=[...new Set((stop.ids||[stop.id]).filter(stopIdSafe))];if(!stopIdSafe(stop.id)||!ids.includes(stop.id)||ids.join('|').length>255)throw Error('Ungültige Haltepositions-ID.');const escaped=v=>String(v).replace(/[\r\n]+/g,' ').replace(/\\/g,'\\\\').replace(/"/g,'\\"');const mapping={__STOP_ID__:escaped(stop.id),__STOP_IDS__:escaped(ids.join('|')),__STOP_NAME__:escaped(String(stop.name||stop.stop_name||stop.id).slice(0,85)),__STOP_LABEL__:escaped(String(stop.label||stop.stop_label||stop.stop_name||stop.id).slice(0,140)),__REFRESH__:settings.refresh,__HOURS__:settings.search_hours,__MODE__:settings.mode,__HIDE_EMPTY__:settings.hide_empty?'true':'false',__ZERO_MODE__:settings.zero_mode,__BUS_DIRECTION__:settings.bus_direction,__LINE_RELIEF__:settings.line_relief};let source=scriptTemplate(model);for(const [key,value]of Object.entries(mapping))source=source.replaceAll(key,String(value));source=source.replace(/^# @version .+$/m,'# @version '+VERSION);if(/__(?:STOP|REFRESH|HOURS|MODE|HIDE_EMPTY|ZERO_MODE|BUS_DIRECTION|LINE_RELIEF)/.test(source))throw Error('Skript enthält nicht ausgefüllte Platzhalter.');return source}
+function preserveSettings(old){const b=old.settings||{};return {refresh:Number(b.refresh)||DEFAULTS.refresh,search_hours:Number(b.search_hours)||DEFAULTS.search_hours,mode:['countdown','time','time_delay'].includes(b.mode)?b.mode:DEFAULTS.mode,hide_empty:b.hide_empty===true||String(b.hide_empty)==='true',zero_mode:b.zero_mode==='bus'?'bus':'normal',bus_direction:b.bus_direction==='rechts_links'?'rechts_links':DEFAULTS.bus_direction,line_relief:['1','2','3'].includes(String(b.line_relief))?String(b.line_relief):DEFAULTS.line_relief}}
+function allocateName(all){const used=new Set(all.map(x=>x.name));if(!used.has('TransitNext'))return 'TransitNext';let n=2;while(n<999&&used.has('TransitNext_'+n))n++;if(n>=999)throw Error('Keine freien TransitNext-App-Namen.');return 'TransitNext_'+n}
+function mergeOldConfig(old,settings){return {...old.settings,...settings,stop_id:old.id,stop_ids:old.ids.join('|'),stop_name:old.stop_name,stop_label:old.stop_label}}
+function newConfig(stop,settings){return {...settings,stop_id:stop.id,stop_ids:stop.ids.join('|'),stop_name:stop.name,stop_label:stop.label}}
+function sourceStop(existing){return {id:existing.id,ids:existing.ids,name:existing.stop_name,label:existing.stop_label}}
+async function compareFresh(d){const fresh=await inventory(d,{signal:state.installAbort?.signal});const candidateSignature=signature({...d,model:fresh.model,installed:fresh.installed});if(candidateSignature!==d.signature)throw Error('Apps oder Modell wurden seit dem Auslesen verändert. Bitte Uhr neu einlesen; es wurde nichts überschrieben.');return fresh}
+async function doInstall(d,tasks,settings,signal){d.log=[];const update=x=>{d.log.push(x);renderProgress()};update('Prüfe Gerät und unveränderte App-Liste …');const check=await compareFresh(d);const used=check.all.map(x=>({...x}));for(const task of tasks){if(signal.aborted)throw Error('Abbruch angefordert.');if(task.type==='create'){
+  const name=allocateName(used);task.name=name;const cfg=newConfig(task.stop,settings);const source=scriptFor(d.model.model,task.stop,settings);update('Installiere '+task.description+' …');const result=await deviceRequest(d,'/api/v1/apps/script/'+encodeURIComponent(name),{method:'PUT',headers:{'Content-Type':'text/plain'},body:source,signal});if(result?.error)throw Error(name+' konnte nicht gestartet werden.');const patched=await deviceRequest(d,'/api/v1/apps/'+encodeURIComponent(name)+'/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(cfg),signal});if(patched?.error)throw Error(name+' meldet einen Skriptfehler.');used.push({name,origin:'script'});update('Installiert: '+task.description)
+ }else if(task.type==='update'){
+  const old=task.existing;const cfgSettings=$('updateOptions').checked?settings:preserveSettings(old);const src=scriptFor(d.model.model,sourceStop(old),cfgSettings);update('Aktualisiere '+old.stop_name+' …');const resp=await deviceRequest(d,'/api/v1/apps/script/'+encodeURIComponent(old.name),{method:'PUT',headers:{'Content-Type':'text/plain'},body:src,signal});if(resp?.error)throw Error(old.name+' meldet Skriptfehler: '+JSON.stringify(resp.error));const config=mergeOldConfig(old,cfgSettings);await deviceRequest(d,'/api/v1/apps/'+encodeURIComponent(old.name)+'/config',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal});update('Aktualisiert: '+old.stop_name)
+ }else if(task.type==='delete'){
+  update('Lösche '+task.existing.stop_name+' …');await deviceRequest(d,'/api/v1/apps/'+encodeURIComponent(task.existing.name),{method:'DELETE',signal});update('Gelöscht: '+task.existing.stop_name)
+ }}
+ update('Lese tatsächlichen Gerätestand erneut ein …');const fresh=await inventory(d,{signal});
+ for(const action of tasks){
+  const installed=fresh.installed.find(x=>x.name===action.name);
+  if(action.type==='delete'&&installed)throw Error('Die Löschung von '+action.description+' konnte nicht bestätigt werden.');
+  if(action.type!=='delete'){
+   if(!installed)throw Error('Die Installation von '+action.description+' erscheint nicht auf der Uhr.');
+   const expectedId=action.type==='create'?action.stop.id:action.existing.id;
+   if(installed.id!==expectedId)throw Error('Haltestelle von '+action.description+' stimmt nach der Installation nicht überein.');
+   if(!installed.source.includes('# @version '+VERSION))throw Error('Neue Skriptversion von '+action.description+' wurde nicht bestätigt.');
+  }
+ }
+ d.all=fresh.all;d.installed=fresh.installed;d.model=fresh.model;d.signature=signature(d);d.state='ready';update('Abgeschlossen und überprüft: '+tasks.length+' Änderung(en).');}
+function renderProgress(){const n=$('installStatus');const lines=[];for(const d of selected())if(d.log.length)lines.push(d.address+':\n'+d.log.map(x=>'• '+x).join('\n'));note(n,lines.join('\n\n')||'Keine Änderungen gestartet.')}
+async function install(){if(state.busy)return;try{validateChosen();const plan=changePlan().filter(p=>p.tasks.length);if(!plan.length)throw Error('Keine Aktion ausgewählt.');const deleted=plan.some(p=>p.tasks.some(t=>t.type==='delete'));if(deleted&&$('deletePhrase').value!=='LÖSCHEN')throw Error('Zum Löschen bitte LÖSCHEN eingeben.');const needOptions=plan.some(p=>p.tasks.some(t=>t.type==='create'))||$('updateOptions').checked&&plan.some(p=>p.tasks.some(t=>t.type==='update'));const settings=needOptions?formSettings():null;if(plan.some(p=>p.tasks.some(t=>t.type!=='delete')))await loadTemplates();state.busy=true;state.installAbort=new AbortController();$('install').disabled=true;$('abortInstall').hidden=false;for(const {device}of plan)device.log=[];renderProgress();let cursor=0;const run=async()=>{while(cursor<plan.length&&!state.installAbort.signal.aborted){const job=plan[cursor++];try{await doInstall(job.device,job.tasks,settings,state.installAbort.signal)}catch(e){job.device.log.push('FEHLER: '+errorMessage(e));renderProgress()}}};await Promise.all([run(),run()]);const failures=plan.filter(p=>p.device.log.some(s=>s.startsWith('FEHLER')));note($('installStatus'),`${plan.length-failures.length} Uhr(en) erfolgreich · ${failures.length} mit Fehler.\n\n`+plan.map(p=>p.device.address+':\n'+p.device.log.map(s=>'• '+s).join('\n')).join('\n\n'),failures.length?'warn':'good');for(const {device}of plan)if(!device.log.some(s=>s.startsWith('FEHLER'))){for(const s of device.installed)s.choice='';}state.additions=state.additions.filter(a=>!selected().every(d=>d.installed.some(i=>i.ids.some(id=>(a.ids||[a.id]).includes(id)))));renderAdditions();}catch(e){note($('installStatus'),errorMessage(e),'error')}finally{state.busy=false;state.installAbort=null;$('abortInstall').hidden=true;renderReview();renderDevices()}}
+function download(name,data,mime){const blob=new Blob([data],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+function backup(){const data={schema:4,version:VERSION,deviceAddresses:state.devices.map(d=>d.address),created:new Date().toISOString()};download('TransitNext-Konfiguration.json',JSON.stringify(data,null,2),'application/json')}
+async function restoreFile(file){try{const data=JSON.parse(await file.text());if(data.schema!==4||!Array.isArray(data.deviceAddresses)||data.deviceAddresses.length>20)throw Error('Ungültige oder inkompatible Konfigurationsdatei.');const existing=new Set(state.devices.map(x=>x.address));for(const raw of data.deviceAddresses){const address=urlOf(raw);if(!existing.has(address)){state.devices.push(makeDevice(address));state.devices.at(-1).state='idle';state.devices.at(-1).status='Gespeicherte Adresse – noch nicht überprüft.';existing.add(address)}}renderDevices();persist();note($('scanProgress'),'Geräteadressen geladen. Keine Uhren oder Aktionen sind vorausgewählt.','good')}catch(e){note($('scanProgress'),errorMessage(e),'error')}}
+function exportApps(){try{const plan=changePlan();let count=0;for(const {device:d,tasks}of plan){for(const task of tasks.filter(t=>t.type==='create'||t.type==='update')){const sets=task.type==='create'?formSettings():$('updateOptions').checked?formSettings():preserveSettings(task.existing);const s=task.type==='create'?task.stop:sourceStop(task.existing);download(`${d.model.model}_${(task.name||task.type+'_'+s.id).replace(/[^\w-]/g,'_')}.ax`,scriptFor(d.model.model,s,sets),'text/plain');count++}}if(!count)throw Error('Bitte zunächst eine Neuinstallation oder ein Update auswählen.');note($('installStatus'),count+' Skripte zum manuellen Import erzeugt.','good')}catch(e){note($('installStatus'),errorMessage(e),'error')}}
+function stepShow(n){state.step=n;for(let i=0;i<4;i++){$('page'+i).classList.toggle('active',i===n);const b=document.querySelector(`.step[data-step="${i}"]`);b.classList.toggle('current',i===n);b.classList.toggle('done',i<n)}$('back').disabled=n===0;$('next').hidden=n===3;$('next').textContent=['Weiter zu Haltestellen','Weiter zur Darstellung','Weiter zum Abschluss',''][n];$('footerHint').textContent=['Uhren erkennen','Haltestellen verwalten','Darstellung konfigurieren','Änderungen bestätigen'][n]+' · Schritt '+(n+1)+' von 4';if(n===1){renderExisting();renderAdditions()}if(n===3)renderReview();window.scrollTo({top:0,behavior:'instant'})}
+function next(){try{if(state.step===0)validateChosen();stepShow(Math.min(3,state.step+1))}catch(e){note($('scanProgress'),errorMessage(e),'warn')}}
+function init(){
+ for(const [id,max,unit] of [['interval',30,'Minute'],['horizon',72,'Stunde']]){
+  const el=$(id);el.replaceChildren(new Option('Bitte auswählen',''));
+  for(let n=1;n<=max;n++)el.add(new Option(n+' '+unit+(n===1?'':'n'),String(n)));
+ }
+ restore();renderDevices();renderAdditions();stepShow(0);
+ $('scanConsent').onchange=()=>{if(!$('scanConsent').checked)state.scanAbort?.abort();$('scanStart').disabled=state.scanAbort!==null||!$('scanConsent').checked};$('scanStart').onclick=scan;$('scanStop').onclick=()=>state.scanAbort?.abort();$('addDevice').onclick=()=>{try{addDevice($('address').value.trim())}catch(e){note($('scanProgress'),errorMessage(e),'error')}};$('reloadAll').onclick=()=>{for(const d of state.devices)if(!d.connecting)connect(d)};
+ $('configExport').onclick=backup;$('configImport').onclick=()=>$('configFile').click();$('configFile').onchange=e=>{if(e.target.files?.[0])restoreFile(e.target.files[0]);e.target.value=''};
+ $('cityFind').onclick=citySearch;$('cityChoice').onchange=chooseCity;$('stopFilter').oninput=populateStops;$('stopChoice').onchange=chooseStop;$('stopAdd').onclick=addStop;$('stopTest').onclick=testStop;
+ $('next').onclick=next;$('back').onclick=()=>stepShow(Math.max(0,state.step-1));document.querySelectorAll('.step').forEach(b=>b.onclick=()=>{const n=Number(b.dataset.step);if(n<state.step)stepShow(n)});
+ $('updateOptions').onchange=()=>state.updateOptions=$('updateOptions').checked;$('install').onclick=install;$('abortInstall').onclick=()=>state.installAbort?.abort();$('exportApps').onclick=exportApps;
+ $('interval').value=String(DEFAULTS.refresh);$('horizon').value=String(DEFAULTS.search_hours);$('mode').value=DEFAULTS.mode;$('hideEmpty').value=String(DEFAULTS.hide_empty);$('zeroMode').value=DEFAULTS.zero_mode;$('relief').value=DEFAULTS.line_relief;$('busDirection').value=DEFAULTS.bus_direction;
+}
+init();
+</script></body></html>
