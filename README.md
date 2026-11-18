@@ -13,7 +13,7 @@ TransitNext zeigt Fahrplaninformationen des öffentlichen Nahverkehrs direkt auf
 - **Nächste Abfahrt:** Liniennummer, Fahrziel und Abfahrtszeit auf dem Display; optional als Minuten-Countdown.
 - **Echtzeitdaten:** Verspätungen oder frühere Abfahrten werden angezeigt, sofern der Datenanbieter entsprechende Informationen bereitstellt.
 - **Steigbezogene Anzeige:** Mehrere Linien am selben physischen Steig werden zusammengefasst; unterschiedliche Steige und Gegenrichtungen bleiben getrennt.
-- **Pixeloptimierte Darstellung:** Eigene Layouts für TC001 (32 × 8 Pixel) und TC002 (52 × 16 Pixel) mit farbigen Linienfeldern und Laufschrift für längere Fahrziele.
+- **Pixeloptimierte Darstellung:** Eigene Layouts für TC001 (32 × 8 Pixel) und TC002 (52 × 16 Pixel) mit farbigen Linienfeldern und Laufschrift für längere Fahrziele. Dreistellige Liniennummern werden auf der TC002 zentriert in einer angepassten Pixelschrift dargestellt.
 - **Busanimation:** Optionale Animation beim Erreichen der Abfahrtsminute; Fahrtrichtung wählbar.
 - **Mehrere Haltestellen und Uhren:** Der Installer unterstützt mehrere Haltepunkte und die Einrichtung auf mehreren ausgewählten AWTRIX-NG-Uhren.
 - **Direkter Betrieb:** Die Anwendung läuft als Berry-Skript auf der Uhr. Home Assistant, MQTT und ein zusätzlicher Server sind nicht erforderlich.
@@ -24,12 +24,12 @@ TransitNext zeigt Fahrplaninformationen des öffentlichen Nahverkehrs direkt auf
 
 Der GitHub-basierte Installer führt in vier Schritten durch die Einrichtung:
 
-1. **Uhren finden:** Nach ausdrücklicher Freigabe AWTRIX-NG-Uhren im lokalen Netzwerk suchen oder per IP-Adresse hinzufügen und die gewünschten Geräte auswählen.
+1. **Uhren finden:** AWTRIX-NG-Uhren im lokalen Netzwerk erkennen oder per IP-Adresse hinzufügen und die gewünschten Geräte auswählen.
 2. **Haltestellen:** Nach Ort und Haltestelle suchen und die gewünschten Bus- beziehungsweise Bahnsteige hinzufügen.
 3. **Darstellung:** Anzeigeformat, Aktualisierungsintervall, Animation und weitere Optionen festlegen.
 4. **Installieren:** Auswahl prüfen und TransitNext auf den ausgewählten Uhren installieren.
 
-Der Installer fragt Geräte im lokalen Netzwerk erst nach einer bewussten Nutzeraktion ab. Der Netzwerkscan benötigt eine zusätzliche ausdrückliche Freigabe. Das Displayprofil wird automatisch erkannt; passwortgeschützte Uhren werden unterstützt. Doppelte Installationen derselben Haltestelle werden vermieden. Die im Repository enthaltenen Skriptvorlagen werden erst bei der Einrichtung passend konfiguriert.
+Der Installer erkennt das Displayprofil automatisch, unterstützt passwortgeschützte Uhren und vermeidet doppelte Installationen derselben Haltestelle. Die im Repository enthaltenen Skriptvorlagen werden erst bei der Einrichtung passend konfiguriert.
 
 **Voraussetzungen:** AWTRIX NG mit aktivierter Skriptunterstützung, Internetverbindung der Uhr und ein Browser mit Zugriff auf das lokale Netzwerk. Abhängig von den Sicherheitsregeln des Browsers können automatische Erkennung und direkte Installation eingeschränkt sein. Der Online-Installer setzt eine aktivierte GitHub-Pages-Seite voraus. Die [`index.html`](index.html) ist auch zum lokalen Öffnen vorgesehen.
 
@@ -47,7 +47,7 @@ Der Installer fragt Geräte im lokalen Netzwerk erst nach einer bewussten Nutzer
 
 Die Abfahrtsdaten stammen aus **Transitous**. Ob Echtzeitdaten, exakte Haltepositionen und Fahrziele verfügbar sind, hängt von den angebundenen Verkehrsunternehmen ab.
 
-**Version:** `20261113.233708` · **Lizenz:** [MIT](LICENSE.md) · **Versionshinweise:** [RELEASE.md](RELEASE.md)
+**Version:** `20261118.222854` · **Lizenz:** [MIT](LICENSE.md) · **Versionshinweise:** [RELEASE.md](RELEASE.md)
 
 ---
 

@@ -1,12 +1,32 @@
+# TransitNext – Korrektur der Liniennummern / Route Number Rendering Fix
+
+**Version `20261118.222854` · 18.11.2026**
+
+## Deutsch
+
+- **TC002:** Dreistellige Liniennummern (100–999) mit überarbeiteter, besser lesbarer 4×7-Pixel-Schrift.
+- **Zentrierung:** Ausrichtung im 17×16-Pixel-Linienfeld einschließlich 3D-Schatten korrigiert.
+- **Unverändert:** Ein- und zweistellige Liniennummern sowie die TC001-Anzeige.
+- **Installer:** Die Sicherheitsverbesserungen für die Netzwerksuche mit ausdrücklicher Freigabe bleiben enthalten.
+
+## English
+
+- **TC002:** Reworked, more legible 4×7 pixel font for three-digit route numbers (100–999).
+- **Centering:** Corrected position within the 17×16 pixel route badge, including the 3D shadow.
+- **Unchanged:** One- and two-digit route numbers and the TC001 layout.
+- **Installer:** Explicit consent for local network scanning is retained.
+
+---
+
 # TransitNext – Erstveröffentlichung / Initial Release
 
 ![TransitNext for AWTRIX NG](Bilder/TransitNext_Titelbild.png)
 
-**Version `20261113.233708` · 13. November 2026**
+**Version `20261113.232106` · 13. November 2026**
 
 ## Deutsch
 
-**Aktualisierung:** Der Netzwerkscan startet ausschließlich nach ausdrücklicher Freigabe. Die HTML-Seite fragt beim Öffnen keine lokalen Uhren ab und lädt Skriptvorlagen erst beim Installieren. Zugangsdatenfelder erscheinen nur bei einer erforderlichen Anmeldung oder nach bewusster Auswahl. Der originale Buy-me-a-Coffee-Button bleibt in README und Installer eingebunden; die bisherige SVG-Ersatzdatei wurde entfernt.
+**Aktualisierung:** Der originale Buy-me-a-Coffee-Button ist direkt unter dem Titelbild in der README und im HTML-Installer eingebunden. Die bisherige SVG-Ersatzdatei wurde entfernt.
 
 
 Mit der Erstveröffentlichung von **TransitNext** erhalten Ulanzi **TC001** und **TC002** mit **AWTRIX NG** eine eigenständige Abfahrtsanzeige für Bus und Bahn.
@@ -32,7 +52,7 @@ Die Erstveröffentlichung wurde mit simulierten Geräte- und API-Antworten gepr�
 
 ## English
 
-**Update:** Network scanning requires explicit opt-in, and no local clocks are contacted when opening the installer. Script templates load only during installation, while login fields appear only when needed or requested. The official Buy Me a Coffee image remains in the README and installer; the previous replacement SVG has been removed.
+**Update:** The official Buy Me a Coffee button appears directly below the README cover and in the HTML installer. The former substitute SVG has been removed.
 
 
 The first public release of **TransitNext** brings an independent bus and rail departure display to **Ulanzi TC001 and TC002** clocks running **AWTRIX NG**.

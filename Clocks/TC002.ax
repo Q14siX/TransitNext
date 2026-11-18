@@ -1,7 +1,7 @@
 # @name TransitNext
 # @desc Naechste OEPNV-Abfahrt
 # @author Q14siX
-# @version 20261113.233708
+# @version 20261118.222854
 # @display 52x16
 # @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
 # @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=384 group="Haltestelle"
@@ -218,21 +218,37 @@ class TransitNext
     "011100111101111", "111001010010010", "111101111101111",
     "111101111001110"
    ]
-   var cols = count == 1 ? 5 : 3
-   var rows = count == 1 ? 7 : 5
+   var glyphs4 = [
+    "1111100110011001100110011111",
+    "0110111001100110011001101111",
+    "1111000100011111100010001111",
+    "1111000100010111000100011111",
+    "1001100110011111000100010001",
+    "1111100010001111000100011111",
+    "0111100010001111100110011111",
+    "1111000100100010010001000100",
+    "1111100110011111100110011111",
+    "1111100110011111000100011110"
+   ]
+   var cols = count == 1 ? 5 : count == 3 ? 4 : 3
+   var rows = count == 1 || count == 3 ? 7 : 5
    var advance = count == 3 ? 1 : 2
    var pix = count == 3 ? 1 : 2
    var gap = count == 1 ? 0 : count == 2 ? 2 : 1
    var gwidth = (cols - 1) * advance + pix
    var total = count * gwidth + (count - 1) * gap
    var left = int((17 - total) / 2)
-   var top = int((16 - rows * 2) / 2)
+   var ink_height = count == 3 ? 8 : rows * 2
+   var top = int((16 - ink_height) / 2)
    for i : 0 .. count - 1
-    var glyph = count == 1 ? glyphs7[string.find(digits, value[i..i])] : glyphs5[string.find(digits, value[i..i])]
+    var digit = string.find(digits, value[i..i])
+    var glyph = count == 1 ? glyphs7[digit] : count == 3 ? glyphs4[digit] : glyphs5[digit]
     for y : 0 .. rows - 1
      for x : 0 .. cols - 1
       if glyph[y * cols + x..y * cols + x] == "1"
-       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, top + y * 2, pix])
+       var yy = count == 3 ? top + y + (y > 3 ? 1 : 0) : top + y * 2
+       var hh = count == 3 && y != 3 ? 1 : 2
+       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, yy, pix, hh])
       end
      end
     end
@@ -623,11 +639,11 @@ class TransitNext
     var shadow = self.shade(c, -15 * int(clamp(num(store.get("line_relief", 2), 2), 1, 3)))
     for dot : self.line_pixels
      var sw = min(dot[2], 15 - dot[0])
-     var sh = min(2, 14 - dot[1])
+     var sh = min(dot[3], 14 - dot[1])
      if sw > 0 && sh > 0 rect_fill(dot[0] + 1, dot[1] + 1, sw, sh, shadow) end
     end
     for dot : self.line_pixels
-     rect_fill(dot[0], dot[1], dot[2], 2, 0xFFFFFF)
+     rect_fill(dot[0], dot[1], dot[2], dot[3], 0xFFFFFF)
     end
    else
     font("small")

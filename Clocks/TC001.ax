@@ -1,7 +1,7 @@
 # @name TransitNext
 # @desc Naechste OEPNV-Abfahrt
 # @author Q14siX
-# @version 20261113.233708
+# @version 20261118.222854
 # @display 32x8
 # @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
 # @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=256 group="Haltestelle"

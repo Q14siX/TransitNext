@@ -11,7 +11,7 @@
 <button type="button" class="step" data-step="2"><span class="number">3</span><span class="step-copy"><strong>Darstellung</strong><small>Optionen wählen</small></span></button>
 <button type="button" class="step" data-step="3"><span class="number">4</span><span class="step-copy"><strong>Abschluss</strong><small>Prüfen & installieren</small></span></button>
 </nav>
-<section class="section active" id="page0" aria-labelledby="head0"><div class="panel"><div class="panel-head"><div><h2 id="head0">Uhren finden und prüfen</h2><p class="muted tiny">Erst nach einer gestarteten Suche oder dem manuellen Verbinden werden Uhren und vorhandene TransitNext-Haltestellen geprüft.</p></div></div><div class="two"><div class="stack"><div class="field"><label for="subnet">Netzwerk durchsuchen</label><div class="inputgroup"><input id="subnet" value="192.168.178.0/24" inputmode="decimal" aria-label="Netzbereich"><button id="scanStart" class="primary" disabled>Netzwerk scannen</button><button id="scanStop" class="danger" hidden>Stoppen</button></div><label class="checkline network-consent" for="scanConsent"><input id="scanConsent" type="checkbox">Ich möchte in diesem lokalen Netzwerk nach AWTRIX-NG-Uhren suchen.</label><small>Start ausschließlich nach ausdrücklicher Freigabe. Chrome kann dafür die Berechtigung zum Zugriff auf das lokale Netzwerk anfordern.</small></div><p id="scanProgress" class="statusline" role="status">Noch keine Netzwerksuche gestartet.</p></div><div class="stack"><div class="field"><label for="address">Uhr per IP-Adresse hinzufügen</label><div class="inputgroup"><input id="address" placeholder="192.168.178.55" autocomplete="off"><button id="addDevice" class="primary">Verbinden</button></div><small>Das Modell wird automatisch erkannt; die vorhandenen Haltestellen werden direkt geladen.</small></div><div class="row"><button class="ghost small" id="configImport">Konfiguration laden</button><button class="ghost small" id="configExport">Konfiguration sichern</button><input id="configFile" type="file" accept="application/json,.json" hidden></div><p class="muted tiny">Adressen und Einstellungen werden lokal im Browser gespeichert. Zugangsdaten werden nicht gespeichert.</p></div></div></div>
+<section class="section active" id="page0" aria-labelledby="head0"><div class="panel"><div class="panel-head"><div><h2 id="head0">Uhren finden und prüfen</h2><p class="muted tiny">Jede gefundene Uhr wird sofort erkannt und ihre vorhandenen TransitNext-Haltestellen werden ausgelesen.</p></div></div><div class="two"><div class="stack"><div class="field"><label for="subnet">Netzwerk durchsuchen</label><div class="inputgroup"><input id="subnet" value="192.168.178.0/24" inputmode="decimal" aria-label="Netzbereich"><button id="scanStart" class="primary" disabled>Netzwerk scannen</button><button id="scanStop" class="danger" hidden>Stoppen</button></div><label class="checkline network-consent" for="scanConsent"><input id="scanConsent" type="checkbox">Ich möchte in diesem lokalen Netzwerk nach AWTRIX-NG-Uhren suchen.</label><small>Start ausschließlich nach ausdrücklicher Freigabe. Chrome kann dafür die Berechtigung zum Zugriff auf das lokale Netzwerk anfordern.</small></div><p id="scanProgress" class="statusline" role="status">Noch keine Netzwerksuche gestartet.</p></div><div class="stack"><div class="field"><label for="address">Uhr per IP-Adresse hinzufügen</label><div class="inputgroup"><input id="address" placeholder="192.168.178.55" autocomplete="off"><button id="addDevice" class="primary">Verbinden</button></div><small>Das Modell wird automatisch erkannt; die vorhandenen Haltestellen werden direkt geladen.</small></div><div class="row"><button class="ghost small" id="configImport">Konfiguration laden</button><button class="ghost small" id="configExport">Konfiguration sichern</button><input id="configFile" type="file" accept="application/json,.json" hidden></div><p class="muted tiny">Adressen und Einstellungen werden lokal im Browser gespeichert. Zugangsdaten werden nicht gespeichert.</p></div></div></div>
 <div class="panel"><div class="panel-head"><div><h2>Erkannte Uhren <span class="badge-number" id="deviceCount">0</span></h2><p class="muted tiny">Die Inventur wird für jede Uhr unabhängig durchgeführt. Erst nach erfolgreichem Auslesen ist sie bereit.</p></div><button class="ghost small" id="reloadAll">Alle erneut prüfen</button></div><div id="deviceCards" class="devices"><div class="no-content">Noch keine Uhren hinzugefügt.</div></div></div></section>
 <section class="section" id="page1" aria-labelledby="head1"><div class="panel"><div class="panel-head"><div><h2 id="head1">Vorhandene Haltestellen</h2><p class="muted tiny">Pro Uhr einzeln entscheiden: Beibehalten, Aktualisieren oder Löschen. Keine Aktion ist vorausgewählt; ohne Auswahl bleibt alles unverändert.</p></div></div><div class="stack" id="existingCards"></div></div>
 <div class="panel"><div class="panel-head"><div><h2>Weitere Haltestellen hinzufügen</h2><p class="muted tiny">Bahnsteig oder Bussteig nach tatsächlicher Fahrtrichtung auswählen. Alle Linien desselben Steigs werden gemeinsam angezeigt.</p></div></div><div class="two"><div class="stack"><div class="field"><label for="citySearch">Ort suchen</label><div class="inputgroup"><input id="citySearch" placeholder="z. B. Kaufbeuren" ><button id="cityFind" class="ghost">Suchen</button></div></div><div class="field"><label for="cityChoice">Ort auswählen</label><select id="cityChoice" disabled><option value="">Bitte zuerst Ort suchen</option></select></div></div><div class="stack"><div class="field"><label for="stopFilter">Haltestellen filtern</label><input id="stopFilter" placeholder="Name der Haltestelle" disabled></div><div class="field"><label for="stopChoice">Bahnsteig / Fahrtrichtung auswählen</label><select id="stopChoice" disabled><option value="">Bitte zuerst Ort wählen</option></select></div></div></div><div class="row stop-actions"><button class="primary" id="stopAdd" disabled>Haltestelle hinzufügen</button><button class="ghost" id="stopTest" disabled>Abfahrten prüfen</button></div><p class="statusline" id="searchStatus" role="status">Noch keine Haltestelle ausgewählt.</p><div id="departureResult" class="summary-card" hidden></div></div>
@@ -22,7 +22,7 @@
 </main><script id="berryTC001" type="text/plain"># @name TransitNext
 # @desc Naechste OEPNV-Abfahrt
 # @author Q14siX
-# @version 20261113.233708
+# @version 20261118.222854
 # @display 32x8
 # @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
 # @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=256 group="Haltestelle"
@@ -644,7 +644,7 @@ return TransitNext()
 </script><script id="berryTC002" type="text/plain"># @name TransitNext
 # @desc Naechste OEPNV-Abfahrt
 # @author Q14siX
-# @version 20261113.233708
+# @version 20261118.222854
 # @display 52x16
 # @config stop_id text "Haltestellen-ID" default="__STOP_ID__" maxlen=160 group="Haltestelle"
 # @config stop_ids text "Haltepunkt-IDs" default="__STOP_IDS__" maxlen=384 group="Haltestelle"
@@ -861,21 +861,37 @@ class TransitNext
     "011100111101111", "111001010010010", "111101111101111",
     "111101111001110"
    ]
-   var cols = count == 1 ? 5 : 3
-   var rows = count == 1 ? 7 : 5
+   var glyphs4 = [
+    "1111100110011001100110011111",
+    "0110111001100110011001101111",
+    "1111000100011111100010001111",
+    "1111000100010111000100011111",
+    "1001100110011111000100010001",
+    "1111100010001111000100011111",
+    "0111100010001111100110011111",
+    "1111000100100010010001000100",
+    "1111100110011111100110011111",
+    "1111100110011111000100011110"
+   ]
+   var cols = count == 1 ? 5 : count == 3 ? 4 : 3
+   var rows = count == 1 || count == 3 ? 7 : 5
    var advance = count == 3 ? 1 : 2
    var pix = count == 3 ? 1 : 2
    var gap = count == 1 ? 0 : count == 2 ? 2 : 1
    var gwidth = (cols - 1) * advance + pix
    var total = count * gwidth + (count - 1) * gap
    var left = int((17 - total) / 2)
-   var top = int((16 - rows * 2) / 2)
+   var ink_height = count == 3 ? 8 : rows * 2
+   var top = int((16 - ink_height) / 2)
    for i : 0 .. count - 1
-    var glyph = count == 1 ? glyphs7[string.find(digits, value[i..i])] : glyphs5[string.find(digits, value[i..i])]
+    var digit = string.find(digits, value[i..i])
+    var glyph = count == 1 ? glyphs7[digit] : count == 3 ? glyphs4[digit] : glyphs5[digit]
     for y : 0 .. rows - 1
      for x : 0 .. cols - 1
       if glyph[y * cols + x..y * cols + x] == "1"
-       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, top + y * 2, pix])
+       var yy = count == 3 ? top + y + (y > 3 ? 1 : 0) : top + y * 2
+       var hh = count == 3 && y != 3 ? 1 : 2
+       self.line_pixels.push([left + i * (gwidth + gap) + x * advance, yy, pix, hh])
       end
      end
     end
@@ -1266,11 +1282,11 @@ class TransitNext
     var shadow = self.shade(c, -15 * int(clamp(num(store.get("line_relief", 2), 2), 1, 3)))
     for dot : self.line_pixels
      var sw = min(dot[2], 15 - dot[0])
-     var sh = min(2, 14 - dot[1])
+     var sh = min(dot[3], 14 - dot[1])
      if sw > 0 && sh > 0 rect_fill(dot[0] + 1, dot[1] + 1, sw, sh, shadow) end
     end
     for dot : self.line_pixels
-     rect_fill(dot[0], dot[1], dot[2], 2, 0xFFFFFF)
+     rect_fill(dot[0], dot[1], dot[2], dot[3], 0xFFFFFF)
     end
    else
     font("small")
@@ -1299,7 +1315,7 @@ class TransitNext
 end
 return TransitNext()
 </script><script>'use strict';
-const API='https://api.transitous.org', VERSION='20261113.233708', LS_KEY='TransitNext.devices.v4', $=id=>document.getElementById(id);
+const API='https://api.transitous.org', VERSION='20261118.222854', LS_KEY='TransitNext.devices.v4', $=id=>document.getElementById(id);
 const DEFAULTS=Object.freeze({refresh:5,search_hours:24,mode:'time_delay',hide_empty:true,zero_mode:'bus',bus_direction:'links_rechts',line_relief:'3'});
 const state={devices:[],additions:[],centers:[],center:null,stops:[],chosen:null,step:0,scanAbort:null,directionAbort:null,installAbort:null,busy:false,searchRevision:0};
 let serial=0;
